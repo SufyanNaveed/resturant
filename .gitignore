@@ -1,0 +1,5 @@
+vendor/*
+application/third_party/*
+application/third_party/vendor/*
+application/third_party/vendor/composer*
+composer.lock
