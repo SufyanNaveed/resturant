@@ -366,10 +366,9 @@ class Pos_invoices_model extends CI_Model
     {
 
 
-        $this->db->select('geopos_draft.id,geopos_draft.tid,geopos_draft.invoicedate,tables.table_no,kitchen.kitchen_name, geopos_draft.subtotal');
+        $this->db->select('geopos_draft.id,geopos_draft.tid,geopos_draft.invoicedate,tables.table_no, geopos_draft.subtotal');
         $this->db->from('geopos_draft');
-        $this->db->join('tables','tables.id = geopos_draft.table_id','left');
-        $this->db->join('kitchen','kitchen.id = geopos_draft.kitchen_id','left');
+        $this->db->join('tables','tables.id = geopos_draft.table_id','left'); 
         $this->db->where('geopos_draft.loc', $this->aauth->get_user()->loc);
         $this->db->order_by('id', 'DESC');
         $this->db->limit(12);
