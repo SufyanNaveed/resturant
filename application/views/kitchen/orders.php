@@ -36,7 +36,7 @@
             <div class="heading-elements">
                 <ul class="list-inline mb-0">
                     <li>
-                        <a href="<?php echo base_url('kitchen') ?>" class="btn btn-info btn-sm rounded">
+                        <a href="<?php echo base_url('kitchen/view_orders/'.$kitchen_id) ?>" class="btn btn-info btn-sm rounded">
                             <i class="fa fa-refresh"></i> &nbsp; Refresh
                         </a> 
                     </li>

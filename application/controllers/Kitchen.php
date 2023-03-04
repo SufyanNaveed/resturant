@@ -45,6 +45,7 @@ class Kitchen extends CI_Controller
         $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.status',0);
         $data['orders'] = $this->db->get()->result_array();
+        $data['kitchen_id'] = $kitchen_id;
 
         //echo '<pre>'; print_r($this->db->last_query()); exit;
         //echo '<pre>'; print_r($data); exit;
