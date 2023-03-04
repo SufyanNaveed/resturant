@@ -217,7 +217,7 @@
                                 <li class="nav-item">
                                     <a class="btn btn-outline-danger  mr-1 mb-1" id="base-tab3" data-toggle="tab"
                                        aria-controls="tab3" href="#tab3" role="tab" aria-selected="false"><i
-                                                class="fa fa-save"></i> <?php echo $this->lang->line('Draft') ?>(s)</a>
+                                                class="fa fa-save"></i> <?php echo $this->lang->line('orders') ?></a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="btn btn-outline-success mb-1" id="base-tab4" data-toggle="tab"
@@ -418,7 +418,7 @@
                         <!-- Button Group with Icons in different sizes -->
                         <div class="btn-group btn-group-lg" role="group">
                             <button type="button" class="possubmit btn btn-warning"><i
-                                        class="fa fa-save"></i> <?php echo $this->lang->line('Draft') ?> </button>
+                                        class="fa fa-save"></i> <?php echo $this->lang->line('place_order') ?> </button>
                             <button type="button" class="btn btn-success possubmit3" data-type="6" data-toggle="modal"
                                     data-target="#basicPay"><i
                                         class="fa fa-money"></i> <?php echo $this->lang->line('Payment') ?>

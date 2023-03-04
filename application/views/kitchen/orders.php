@@ -1,3 +1,30 @@
+<style>
+.small-box{    
+    border: 1px solid #d5d3d3;
+    background: #e8eced;
+}
+.inner > h4{
+    padding-top: 15px;
+}
+.small-box-footer{
+    margin:10px;
+}
+.alert-primary{
+    padding: 3px 6px;
+    background: #2370bb !important;
+    color: #fff !important;
+}
+.alert-success{
+    padding: 3px 6px;
+}
+.table th, .table td{
+    padding: 0.75rem 1.5rem !important;
+}
+.mark_as_cooked_btn{
+    margin-left: 15px;
+}
+</style>
+
 <div class="content-body">
     <div class="card">
         <div class="card-header">
@@ -5,14 +32,14 @@
                         href="<?php echo base_url('kitchen') ?>"
                         class="btn btn-primary btn-sm rounded">
                     <?php echo $this->lang->line('Manage kitchen') ?>
-                </a>  <a
-                        href="<?php echo base_url('kitchen') ?>?group=yes"
-                        class="btn btn-purple btn-sm rounded"><i class="ft-grid"></i></a> <a
-                        href="<?php echo base_url('kitchen') ?>"
-                        class="btn btn-purple btn-sm rounded"><i class="ft-list"></i></a></h5>
-            <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                </a>  </h5> 
             <div class="heading-elements">
                 <ul class="list-inline mb-0">
+                    <li>
+                        <a href="<?php echo base_url('kitchen') ?>" class="btn btn-info btn-sm rounded">
+                            <i class="fa fa-refresh"></i> &nbsp; Refresh
+                        </a> 
+                    </li>
                     <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
                     <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
                     <li><a data-action="close"><i class="ft-x"></i></a></li>
@@ -22,68 +49,50 @@
         <div class="card-content">
             <div id="notify" class="alert alert-success" style="display:none;">
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
-
                 <div class="message"></div>
             </div>
 
             <div class="card-body">
-
-
-                <table id="kitchentable" class="table table-striped table-bordered zero-configuration" cellspacing="0"
-                       width="100%">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th><?php echo $this->lang->line('Name') ?></th>
-                        <th><?php echo $this->lang->line('Description') ?></th>
-                        <th><?php echo $this->lang->line('Action') ?></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <?php if($kitchens) { foreach($kitchens as $key=>$kitchen){ ?>
-                            <tr>
-                                <td><?php echo $key+1; ?></td> 
-                                <td><?php echo $kitchen['kitchen_name']; ?></td> 
-                                <td><?php echo $kitchen['kitchen_description']; ?></td> 
-                                <td>
-                                    <a href="<?php echo base_url('kitchen/view_orders/'.$kitchen['id'])?>" class="btn btn-success btn-sm " title='View Orders'><span class="fa fa-view"></span><?php echo 'View Orders' ?></a>
-                                    <a href="<?php echo base_url('kitchen/edit/'.$kitchen['id'])?>" class="btn btn-primary btn-sm " title='Edit'><span class="fa fa-pencil"></span><?php echo $this->lang->line('edit') ?></a>
-                                    <a href="javascript:void(0)" data-object-id='<?php echo $kitchen['id']; ?>' class="btn btn-danger btn-sm delete-object" title='Delete'><span class="fa fa-trash"></span><?php echo $this->lang->line('delete') ?></a>
-                                </td> 
-                            </tr>
-                        <?php } } ?>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <th>#</th>
-                        <th><?php echo $this->lang->line('Name') ?></th>
-                        <th><?php echo $this->lang->line('Description') ?></th>
-                        <th><?php echo $this->lang->line('Action') ?></th>
-                    </tr>
-                    </tfoot>
-                </table>
-
+                <div class="row" id="orders_div">
+                    <?php if($orders) { foreach($orders as $key=>$order){ ?>
+                        <div class="col-md-3 col-xs-6 order_div_<?php echo $order['id'] ?>">
+                            <div class="small-box bg-gray">
+                                <div class="inner">
+                                    <h4 class="text-center">Kot# <?php echo $order['invoice_id'] ?></h4>
+                                    <table class="table no-margin no-border table-slim">
+                                        <tbody>
+                                                <tr>
+                                                    <th>Placed at</th>
+                                                    <td><?php echo $order['created_at'] ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Order status</th>
+                                                    <td><span class="alert alert-primary">Received</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Customer</th>
+                                                    <td><?php echo $order['cus_name']; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Table</th>
+                                                    <td><?php echo $order['table_no']; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Payment Status</th>
+                                                    <td><span class="alert alert-success"><?php echo $order['payment'] == 1 ? 'Paid' : 'Unpaid'; ?></span></td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <a href="javascript:void(0)" class="btn btn-success small-box-footer mark_as_cooked_btn" data-order_id="<?php echo $order['id'] ?>"><i class="fa fa-check-square-o"></i> Mark as cooked</a>
+                                <a href="#" class="btn btn-info small-box-footer btn-modal" data-href="https://pos.ultimatefosters.com/sells/881" data-container=".view_modal">Order details <i class="fa fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    <?php } } ?>
+                </div>
             </div>
         </div>
-        <script type="text/javascript">
-        $(document).ready(function () {
-
-            //datatables
-            $('#kitchentable').DataTable({
-                responsive: true, <?php datatable_lang();?> dom: 'Blfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        footer: true,
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4]
-                        }
-                    }
-                ],
-            });
-
-        });
-    </script>
+        
     <div id="delete_model" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -107,3 +116,29 @@
             </div>
         </div>
     </div>
+
+
+
+<script> 
+    $(function () {
+        'use strict';
+        
+        $('.mark_as_cooked_btn').click(function (e) { 
+            var order_id = $(this).attr('data-order_id');
+            jQuery.ajax({
+
+                url: baseurl + 'kitchen/update_order_status',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    order_id: order_id,
+                    '<?=$this->security->get_csrf_token_name()?>': crsf_hash
+                },
+                success: function (data) {
+                    $(".order_div_"+ order_id).hide();
+                }
+            });
+
+        });
+    }); 
+</script>

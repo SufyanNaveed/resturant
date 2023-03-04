@@ -31,9 +31,23 @@ class Kitchen extends CI_Controller
 
     public function view_orders($kitchen_id)
     {
-        $this->load->model('pos_invoices_model', 'invocies');
-        $data['kitchen_orders'] = $this->invocies->drafts($kitchen_id);
+        // $this->load->model('pos_invoices_model', 'invocies');
+        // $data['kitchen_orders'] = $this->invocies->drafts($kitchen_id);
 
+        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name');
+        $this->db->from('orders');
+        $this->db->join('geopos_invoices', 'geopos_invoices.id = orders.kot', 'left');
+        $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = orders.kot', 'left');
+        $this->db->join('geopos_products', 'geopos_products.pid = geopos_invoice_items.pid', 'left');
+        $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
+        $this->db->join('tables', 'tables.id = orders.table_id', 'left');
+        $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
+        $this->db->where('geopos_products.kitchen_id',$kitchen_id);
+        $this->db->where('orders.status',0);
+        $data['orders'] = $this->db->get()->result_array();
+
+        //echo '<pre>'; print_r($this->db->last_query()); exit;
+        //echo '<pre>'; print_r($data); exit;
         $head['title'] = "Kitchen Orders";
         $head['usernm'] = $this->aauth->get_user()->username;
         $this->load->view('fixed/header', $head);
@@ -49,6 +63,22 @@ class Kitchen extends CI_Controller
         $this->load->view('fixed/header', $head);
         $this->load->view('kitchen/add');
         $this->load->view('fixed/footer');
+    }
+
+    public function update_order_status()
+    {
+        $order_id = $this->input->post('order_id', true); 
+        
+        $data = array(
+            'status' => 1  
+        );
+        $this->db->set($data);
+        $this->db->where('id',$order_id);
+        if($this->db->update('orders')) {
+            echo true;
+        } else {
+            echo false;
+        }
     }
 
 

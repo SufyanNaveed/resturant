@@ -256,6 +256,7 @@ class Pos_invoices extends CI_Controller
         $st_c = 0;
         $print_now = $this->input->post('printnow');
         $account = $this->input->post('account');
+        $table_id = $this->input->post('table_id');
         $this->load->model('plugins_model', 'plugins');
         $empl_e = $this->plugins->universal_api(69);
         if ($empl_e['key1']) {
@@ -368,6 +369,16 @@ class Pos_invoices extends CI_Controller
                 $invocieno2 = $invocieno;
                 $invocieno = $this->db->insert_id();
 
+                $order_place = array(
+                    'invoice_id' => $invocieno_n, 
+                    'kot' => $invocieno,
+                    'payment' => 1, 
+                    'status' => 0,
+                    'table_id' => $table_id,
+                    'created_by' => $this->aauth->get_user()->id,
+                    'loc' => $this->aauth->get_user()->loc
+                );
+                $this->db->insert('orders', $order_place);
 
                 $pid = $this->input->post('pid');
                 $productlist = array();
@@ -804,6 +815,19 @@ class Pos_invoices extends CI_Controller
             if ($this->db->insert('geopos_draft', $data)) {
                 $invocieno2 = $invocieno;
                 $invocieno = $this->db->insert_id();
+                
+                $order_place = array(
+                'invoice_id' => $invocieno2, 
+                'kot' => $invocieno,
+                'payment' => 0, 
+                'status' => 0,
+                'table_id' => $table_id,
+                'created_by' => $this->aauth->get_user()->id,
+                'loc' => $this->aauth->get_user()->loc
+                );
+                $this->db->insert('orders', $order_place);
+
+
                 $pid = $this->input->post('pid');
                 $productlist = array();
                 $prodindex = 0;

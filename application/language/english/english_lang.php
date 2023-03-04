@@ -973,3 +973,6 @@ $lang['Add table'] = "Add Table";
 $lang['Add New table'] = "Add New Table";
 $lang['Edit table'] = "Edit Table";
 $lang['delete this table'] = "Are you sure you want to delete this Table?";
+
+$lang['place_order'] = "Place Order";
+$lang['orders'] = "Orders";
