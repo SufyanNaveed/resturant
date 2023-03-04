@@ -76,7 +76,7 @@
                                     <select class="form-control required" id="table_id" name="table_id">
                                         <option value="">-- Select Table --</option>
                                         <?php if($tables){ foreach($tables as $key=>$table){ ?>
-                                            <option value="<?php echo $table['id'] ?>"><?php echo $table['table_no'] ?></option>
+                                            <option value="<?php echo $table['id'] ?>"><?php echo $table['floor_num'] .'&nbsp;&nbsp;-&nbsp;&nbsp;'.$table['table_no'] ?></option>
                                         <?php } } ?>
                                     </select>
                                 </div>
@@ -264,9 +264,9 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="tab3" role="tabpanel" aria-labelledby="base-tab3">
-                                    <?php foreach ($draft_list as $rowd) {
-                                        echo '<li class="indigo p-1"><a href="' . base_url() . 'pos_invoices/draft?id=' . $rowd['id'] . '"><span class="alert alert-primary alertclass">' . $rowd['table_no'] . '</span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: '. amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) .'</span> &nbsp;&nbsp;(Date: '. $rowd['invoicedate'] . ')</a></li>';
-                                    } ?>
+                                    <?php foreach ($draft_list as $rowd) { ?>
+                                        <li class="indigo p-1"><a <?php if($rowd['payment'] == 0) { echo 'href="'.base_url().'pos_invoices/draft?id='.$rowd['id'].'"'; } ?> ><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: <?php echo amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) ?> </span> &nbsp;&nbsp;(Date: <?php echo $rowd['invoicedate']; ?>)</a></li>';
+                                    <?php } ?>
                                 </div>
                                 <div class="tab-pane" id="tab4" role="tabpanel" aria-labelledby="base-tab4">
                                     <div class="form-group row">

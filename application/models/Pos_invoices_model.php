@@ -375,6 +375,20 @@ class Pos_invoices_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
 
+        // $this->db->select('orders.*, tables.table_no');
+        // $this->db->from('orders');
+        // // $this->db->join('geopos_invoices', 'geopos_invoices.id = orders.kot', 'left');
+        // // $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = orders.kot', 'left');
+        // // $this->db->join('geopos_products', 'geopos_products.pid = geopos_invoice_items.pid', 'left');
+        // // $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
+        // $this->db->join('tables', 'tables.id = orders.table_id', 'left');
+        // // $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
+        // // $this->db->where('geopos_products.kitchen_id',$kitchen_id);
+        // // $this->db->where('orders.status',0);
+        // $this->db->limit(12);
+        // $query = $this->db->get();
+        // return $query->result_array();
+
     }
 
     public function drafts_id($id)

@@ -81,8 +81,9 @@ class Pos_invoices extends CI_Controller
         $this->load->library("Common");
         $data['custom_fields_c'] = $this->custom->add_fields(1);
 
-        $this->db->select('*');
+        $this->db->select('tables.*,floors.floor_num');
         $this->db->from('tables');
+        $this->db->join('floors','tables.floor_id = floors.id','left');
         $data['tables'] = $this->db->get()->result_array();
 
         $data['taxlist'] = $this->common->taxlist($this->config->item('tax'));
