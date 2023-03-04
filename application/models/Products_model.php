@@ -33,9 +33,10 @@ class Products_model extends CI_Model
 
     private function _get_datatables_query($id = '', $w = '', $sub = '')
     {
-        $this->db->select('geopos_products.*,geopos_product_cat.title AS c_title,geopos_warehouse.title');
+        $this->db->select('geopos_products.*,geopos_product_cat.title AS c_title,geopos_warehouse.title, kitchen.kitchen_name');
         $this->db->from($this->table);
         $this->db->join('geopos_warehouse', 'geopos_warehouse.id = geopos_products.warehouse');
+        $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id');
         if ($sub) {
             $this->db->join('geopos_product_cat', 'geopos_product_cat.id = geopos_products.sub_id');
 
@@ -159,7 +160,7 @@ class Products_model extends CI_Model
         return $this->db->count_all_results();
     }
 
-    public function addnew($catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type = '', $w_stock = '', $w_alert = '', $sub_cat = '', $b_id = '', $serial = '', $product_type)
+    public function addnew($catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type = '', $w_stock = '', $w_alert = '', $sub_cat = '', $b_id = '', $serial = '', $product_type, $kitchen)
     {
         $ware_valid = $this->valid_warehouse($warehouse);
         if (!$sub_cat) $sub_cat = 0;
@@ -196,7 +197,8 @@ class Products_model extends CI_Model
                         'code_type' => $code_type,
                         'sub_id' => $sub_cat,
                         'b_id' => $b_id,
-                        'product_type' => $product_type
+                        'product_type' => $product_type,
+                        'kitchen_id' => $kitchen
                     );
 
                 } else {
@@ -223,7 +225,8 @@ class Products_model extends CI_Model
                         'code_type' => 'EAN13',
                         'sub_id' => $sub_cat,
                         'b_id' => $b_id,
-                        'product_type' => $product_type
+                        'product_type' => $product_type,
+                        'kitchen_id' => $kitchen
                     );
                 }
                 $this->db->trans_start();
@@ -309,7 +312,8 @@ class Products_model extends CI_Model
                     'code_type' => $code_type,
                     'sub_id' => $sub_cat,
                     'b_id' => $b_id,
-                    'product_type' => $product_type
+                    'product_type' => $product_type,
+                    'kitchen_id' => $kitchen
                 );
             } else {
                 $barcode = rand(100, 999) . rand(0, 9) . rand(1000000, 9999999) . rand(0, 9);
@@ -333,7 +337,8 @@ class Products_model extends CI_Model
                     'code_type' => 'EAN13',
                     'sub_id' => $sub_cat,
                     'b_id' => $b_id,
-                    'product_type' => $product_type
+                    'product_type' => $product_type,
+                    'kitchen_id' => $kitchen
                 );
             }
             $this->db->trans_start();
@@ -400,7 +405,7 @@ class Products_model extends CI_Model
         }
     }
 
-    public function edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat = '', $b_id = '', $vari = null, $serial = null)
+    public function edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat = '', $b_id = '', $vari = null, $serial = null, $kitchen_id)
     {
         $this->db->select('qty');
         $this->db->from('geopos_products');
@@ -429,7 +434,8 @@ class Products_model extends CI_Model
                     'barcode' => $barcode,
                     'code_type' => $code_type,
                     'sub_id' => $sub_cat,
-                    'b_id' => $b_id
+                    'b_id' => $b_id,
+                    'kitchen_id' => $kitchen_id
                 );
 
                 $this->db->set($data);
@@ -470,7 +476,8 @@ class Products_model extends CI_Model
                 'barcode' => $barcode,
                 'code_type' => $code_type,
                 'sub_id' => $sub_cat,
-                'b_id' => $b_id
+                'b_id' => $b_id,
+                'kitchen_id' => $kitchen_id
             );
             $this->db->set($data);
             $this->db->where('pid', $pid);

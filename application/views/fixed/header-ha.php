@@ -776,6 +776,54 @@
                     </ul>
                 </li>
             <?php }
+            
+            if ($this->aauth->premission(2)) { ?>
+                <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"
+                                                                      data-toggle="dropdown"><i
+                                class="ft-layers"></i><span><?php echo $this->lang->line('resturant') ?></span></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu"><a
+                                    class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"><i
+                                        class="ft-list"></i> <?php echo $this->lang->line('kitchen Manager') ?></a>
+                            <ul class="dropdown-menu">
+                                <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>kitchen/add"
+                                                    data-toggle="dropdown"> <?php echo $this->lang->line('New kitchen'); ?></a>
+                                </li>
+                                <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>kitchen"
+                                                    data-toggle="dropdown"><?= $this->lang->line('Manage kitchen'); ?></a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                <i class="ft-list"></i> <?php echo $this->lang->line('floor Manager') ?></a>
+                            <ul class="dropdown-menu">
+                                <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>floors/add"
+                                                    data-toggle="dropdown"> <?php echo $this->lang->line('New floor'); ?></a>
+                                </li>
+                                <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>floors"
+                                                    data-toggle="dropdown"><?= $this->lang->line('Manage floor'); ?></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                <i class="ft-list"></i> <?php echo $this->lang->line('table Manager') ?></a>
+                            <ul class="dropdown-menu">
+                                <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>tables/add"
+                                                    data-toggle="dropdown"> <?php echo $this->lang->line('New table'); ?></a>
+                                </li>
+                                <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>tables"
+                                                    data-toggle="dropdown"><?= $this->lang->line('Manage table'); ?></a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+            <?php }
             if ($this->aauth->premission(3)) {
                 ?>
                 <li class="dropdown nav-item" data-menu="dropdown"><a class="dropdown-toggle nav-link" href="#"

@@ -64,10 +64,34 @@
 
                     </div>
 
+                    
+
                 </div>
                 <div>
                     <div class="users-list-padding media-list">
-
+                        <br>
+                        <div class="row">
+                            <div class="offset-1 col-10">
+                                <div class="input-group">
+                                    <select class="form-control required" id="table_id" name="table_id">
+                                        <option value="">-- Select Table --</option>
+                                        <?php if($tables){ foreach($tables as $key=>$table){ ?>
+                                            <option value="<?php echo $table['id'] ?>"><?php echo $table['table_no'] ?></option>
+                                        <?php } } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- <div class="col-5">
+                                <div class="input-group">
+                                    <select class="form-control required" id="kitchen_id" name="kitchen_id">
+                                        <option value="">-- Select Kitchen --</option>
+                                        <?php if($kitchens){ foreach($kitchens as $key=>$kitchen){ ?>
+                                            <option value="<?php echo $kitchen['id'] ?>"><?php echo $kitchen['kitchen_name'] ?></option>
+                                        <?php } } ?>
+                                    </select> 
+                                </div>
+                            </div> -->
+                        </div>
                         <br>
                         <div class="row bg-gradient-directional-purple white m-0 pt-1 pb-1">
                             <div class="col-4 ">
@@ -158,17 +182,6 @@
                             </div>
                         </div>
 
-                        <div class="row m-2">
-                            <div class="col-3">
-                                <strong> <?php echo 'Table No' ?></strong>
-                            </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control form-control-sm required" onkeypress="return isNumber(event)"
-                                       placeholder="Enter Table" name="table_no" autocomplete="off">
-                            </div>
-                        </div>
-
-
                         <hr>
                         <?php if ($emp['key1']) { ?>
                             <div class="col">
@@ -252,7 +265,7 @@
                                 </div>
                                 <div class="tab-pane" id="tab3" role="tabpanel" aria-labelledby="base-tab3">
                                     <?php foreach ($draft_list as $rowd) {
-                                        echo '<li class="indigo p-1"><a href="' . base_url() . 'pos_invoices/draft?id=' . $rowd['id'] . '"><span class="alert alert-primary alertclass"> Table # ' . $rowd['table_no'] . '</span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: '. amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) .'</span> &nbsp;&nbsp;(Date: '. $rowd['invoicedate'] . ')</a></li>';
+                                        echo '<li class="indigo p-1"><a href="' . base_url() . 'pos_invoices/draft?id=' . $rowd['id'] . '"><span class="alert alert-primary alertclass">' . $rowd['table_no'] . '</span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: '. amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) .'</span> &nbsp;&nbsp;(Date: '. $rowd['invoicedate'] . ')</a></li>';
                                     } ?>
                                 </div>
                                 <div class="tab-pane" id="tab4" role="tabpanel" aria-labelledby="base-tab4">
@@ -395,7 +408,7 @@
                         <h1>Table's Order</h1>
                         <div>
                             <?php foreach ($draft_list as $rowd) {
-                                echo '<li class="indigo p-1"><a href="' . base_url() . 'pos_invoices/draft?id=' . $rowd['id'] . '"><span class="alert alert-primary alertclass"> Table # ' . $rowd['table_no'] . '</span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: '. amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) .'</span> &nbsp;&nbsp;(Date: '. $rowd['invoicedate'] . ')</a></li>';
+                                echo '<li class="indigo p-1"><a href="' . base_url() . 'pos_invoices/draft?id=' . $rowd['id'] . '"><span class="alert alert-primary alertclass">' . $rowd['table_no'] . '</span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: '. amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) .'</span> &nbsp;&nbsp;(Date: '. $rowd['invoicedate'] . ')</a></li>';
                             } ?>
                         </div>
                     </div>

@@ -61,6 +61,10 @@ class Products extends CI_Controller
 
     public function add()
     {
+        $this->db->select('*');
+        $this->db->from('kitchen');
+        $data['kitchens'] = $this->db->get()->result_array();
+        
         $data['cat'] = $this->categories_model->category_list();
         $data['units'] = $this->products->units();
         $data['warehouse'] = $this->categories_model->warehouse_list();
@@ -96,6 +100,7 @@ class Products extends CI_Controller
             $row[] = +$prd->qty;
             $row[] = $prd->product_code;
             $row[] = $prd->c_title;
+            $row[] = $prd->kitchen_name;
             $row[] = $prd->title;
             $row[] = amountExchange($prd->product_price, 0, $this->aauth->get_user()->loc);
             $row[] = amountExchange($prd->product_wholesale_price, 0, $this->aauth->get_user()->loc);
@@ -152,8 +157,9 @@ class Products extends CI_Controller
         $brand = $this->input->post('brand');
         $serial = $this->input->post('product_serial');
         $product_type = $this->input->post('product_type');
+        $kitchen = $this->input->post('kitchen_id');
         if ($catid) {
-            $this->products->addnew($catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type, $w_stock, $w_alert, $sub_cat, $brand, $serial, $product_type);
+            $this->products->addnew($catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type, $w_stock, $w_alert, $sub_cat, $brand, $serial, $product_type, $kitchen);
         }
     }
 
@@ -203,8 +209,11 @@ class Products extends CI_Controller
             $query = $this->db->get();
             $data['product_ware'] = $query->result_array();
         }
-
-
+        
+        $this->db->select('*');
+        $this->db->from('kitchen');
+        $data['kitchens'] = $this->db->get()->result_array();
+        
         $data['units'] = $this->products->units();
         $data['serial_list'] = $this->products->serials($data['product']['pid']);
         $data['cat_ware'] = $this->categories_model->cat_ware($pid);
@@ -246,6 +255,7 @@ class Products extends CI_Controller
         $barcode = $this->input->post('barcode');
         $code_type = $this->input->post('code_type');
         $sub_cat = $this->input->post('sub_cat');
+        $kitchen_id = $this->input->post('kitchen_id');
         if (!$sub_cat) $sub_cat = 0;
         $brand = $this->input->post('brand');
         $vari = array();
@@ -259,7 +269,7 @@ class Products extends CI_Controller
         $serial['new'] = $this->input->post('product_serial');
         $serial['old'] = $this->input->post('product_serial_e');
         if ($pid) {
-            $this->products->edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat, $brand, $vari, $serial);
+            $this->products->edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $product_wholesale_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat, $brand, $vari, $serial, $kitchen_id);
         }
     }
 

@@ -94,6 +94,18 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="kitchen"><?php echo 'Kitchen' ?>*</label>
+                        <div class="col-sm-6">
+                            <select class="form-control required" id="kitchen_id" name="kitchen_id">
+                                <option value="">-- Select Kitchen --</option>
+                                <?php if($kitchens){ foreach($kitchens as $key=>$kitchen){ ?>
+                                    <option value="<?php echo $kitchen['id'] ?>" <?php echo $product['kitchen_id'] == $kitchen['id'] ? 'selected="selected"' : ''; ?>><?php echo $kitchen['kitchen_name'] ?></option>
+                                <?php } } ?>
+                            </select> 
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
 
                         <label class="col-sm-2 col-form-label"
                                for="product_code"><?php echo $this->lang->line('Product Code') ?></label>

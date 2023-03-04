@@ -940,3 +940,36 @@ $lang['Purchase'] = "Purchase";
 $lang['Net_amount'] = "Net Amount";
 $lang['total_Vat'] = "Total VAT";
 $lang['Purchase'] = "Purchase";
+$lang['kitchen'] = "Kitchen";
+$lang['kitchen Manager'] = "kitchen Manager";
+$lang['New kitchen'] = "New kitchen";
+$lang['Manage kitchen'] = "Manage Kitchen";
+$lang['kitchen_name'] = "Kitchen Name";
+$lang['Add kitchen'] = "Add Kitchen";
+$lang['Add New Kitchen'] = "Add New Kitchen";
+$lang['Edit Kitchen'] = "Edit Kitchen";
+$lang['delete this kitchen'] = "Are you sure you want to delete this Kitchen? <br><strong> It will delete all orders in this kitchen also.</strong>";
+$lang['Kitchen_name'] = "Kitchen Name";
+$lang['select_kitchen'] = "Select Kitchen";
+$lang['kitchen_order'] = "Kitchen Orders";
+
+$lang['resturant'] = "Resturant";
+$lang['floor'] = "Floor";
+$lang['floor Manager'] = "Floor Manager";
+$lang['New floor'] = "New Floor";
+$lang['Manage floor'] = "Manage Floor";
+$lang['Add floor'] = "Add Floor";
+$lang['Add New floor'] = "Add New Floor";
+$lang['Edit floor'] = "Edit Floor";
+$lang['delete this floor'] = "Are you sure you want to delete this Floor? <br><strong> It will delete all tables in this Floor also.</strong>";
+$lang['select_floor'] = "Select floor";
+
+
+$lang['table'] = "Table";
+$lang['table Manager'] = "Table Manager";
+$lang['New table'] = "New Table";
+$lang['Manage table'] = "Manage Table";
+$lang['Add table'] = "Add Table";
+$lang['Add New table'] = "Add New Table";
+$lang['Edit table'] = "Edit Table";
+$lang['delete this table'] = "Are you sure you want to delete this Table?";

@@ -79,7 +79,11 @@ class Pos_invoices extends CI_Controller
         $this->load->model('categories_model');
         $this->load->model('plugins_model', 'plugins');
         $this->load->library("Common");
-          $data['custom_fields_c'] = $this->custom->add_fields(1);
+        $data['custom_fields_c'] = $this->custom->add_fields(1);
+
+        $this->db->select('*');
+        $this->db->from('tables');
+        $data['tables'] = $this->db->get()->result_array();
 
         $data['taxlist'] = $this->common->taxlist($this->config->item('tax'));
         $data['gateway'] = $this->invocies->gateway_list('Yes');
@@ -238,7 +242,7 @@ class Pos_invoices extends CI_Controller
         $discountFormat = $this->input->post('discountFormat');
         $pterms = $this->input->post('pterms');
         $currency = $this->input->post('mcurrency');
-        $table_no = $this->input->post('table_no');
+        $table_id = $this->input->post('table_id');
         $wholesale_check = $this->input->post('wholesale_check');
         $total_discount = rev_amountExchange_s($this->input->post('after_disc'), $currency, $this->aauth->get_user()->loc);
         $disc_val = numberClean($this->input->post('disc_val'));
@@ -796,7 +800,7 @@ class Pos_invoices extends CI_Controller
             $bill_due_date = datefordatabase($invocieduedate);
             $promo_flag = false;
             $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'pmethod' => $pmethod, 'notes' => $notes, 'status' => $status, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'pamnt' => 0, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms,
-            'multi' => $currency, 'i_class' => 1, 'loc' => $this->aauth->get_user()->loc, 'table_no' => $table_no);
+            'multi' => $currency, 'i_class' => 1, 'loc' => $this->aauth->get_user()->loc, 'table_id' => $table_id);
             if ($this->db->insert('geopos_draft', $data)) {
                 $invocieno2 = $invocieno;
                 $invocieno = $this->db->insert_id();

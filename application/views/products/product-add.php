@@ -70,21 +70,27 @@
                 </div>
 
                 <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="kitchen"><?php echo 'Kitchen' ?>*</label>
+                    <div class="col-sm-6">
+                        <select class="form-control required" id="kitchen_id" name="kitchen_id">
+                            <option value="">-- Select Kitchen --</option>
+                            <?php if($kitchens){ foreach($kitchens as $key=>$kitchen){ ?>
+                                <option value="<?php echo $kitchen['id'] ?>"><?php echo $kitchen['kitchen_name'] ?></option>
+                            <?php } } ?>
+                        </select> 
+                    </div>
+                </div>
 
-                    <label class="col-sm-2 col-form-label"
-                           for="product_cat"><?php echo 'Product Type' ?>*</label>
-
+                <!-- <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="product_cat"><?php echo 'Product Type' ?>*</label>
                     <div class="col-sm-6">
                         <select name="product_type" class="form-control required">
                             <option value="">-- Select Type --</option>
                             <option value="0">Single</option>
                             <option value="1">Grouped</option>
                         </select>
-
-
                     </div>
-                </div>
-
+                </div> -->
                 <div class="form-group row">
 
                     <label class="col-sm-2 col-form-label"
