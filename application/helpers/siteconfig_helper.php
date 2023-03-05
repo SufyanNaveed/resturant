@@ -536,3 +536,22 @@ if (!function_exists('dd')) {
         exit;
     }
  }
+
+
+ function existsKeyValue($myArray, $key, $value) {
+    $queue = [$myArray]; //creating a queue of a single element, which is our outermost array
+
+    //when we reach the count of the queue we looped all inner loops as well and failed to find the item
+    for ($index = 0; $index < count($queue); $index++) {
+        //Looping the current array, finding the key and the value
+        foreach ($queue[$index] as $k => &$v) {
+            //If they match the search, then we can return true
+            if (($key === $k) && ($value === $v)) {
+                return true;
+            }
+            //We need to make sure we did not already loop our current array to avoid infinite cycles
+            if (is_array($v)) $queue[]=$v;
+        }
+    }
+    return false;
+}

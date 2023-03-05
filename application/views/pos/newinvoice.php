@@ -8,10 +8,29 @@
     list-style-type: none;
     margin-top: 15px;
 }
-.indigo.p-1 > a{
+.indigo.p-1 > a,
+.indigo.p-2 > a{
     color: black;
 }
+
+.indigo.p-2{
+    border: 1px solid black;
+    background: #ffbcc6;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 20px 10px !important;
+    list-style-type: none;
+    margin-top: 15px;
+}
 .alertclass{
+    padding: 4px;
+    font-size: 13px;
+    font-weight: 900;
+    background-color: #22c2dc !important;
+    color: white !important;
+}
+
+.alertclassprimary{
     padding: 4px;
     font-size: 13px;
     font-weight: 900;
@@ -75,9 +94,9 @@
                                 <div class="input-group">
                                     <select class="form-control required" id="table_id" name="table_id">
                                         <option value="">-- Select Table --</option>
-                                        <?php if($tables){ foreach($tables as $key=>$table){ ?>
+                                        <?php if($tables){ foreach($tables as $key=>$table){ if(!existsKeyValue($busy_tables, 'table_id', $table['id'])){ ?>
                                             <option value="<?php echo $table['id'] ?>"><?php echo $table['floor_num'] .'&nbsp;&nbsp;-&nbsp;&nbsp;'.$table['table_no'] ?></option>
-                                        <?php } } ?>
+                                        <?php } } }  ?>
                                     </select>
                                 </div>
                             </div>
@@ -216,7 +235,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="btn btn-outline-danger  mr-1 mb-1" id="base-tab3" data-toggle="tab"
-                                       aria-controls="tab3" href="#tab3" role="tab" aria-selected="false"><i
+                                       aria-controls="tab3" href="#tab3" data-id="0" role="tab" aria-selected="false"><i
                                                 class="fa fa-save"></i> <?php echo $this->lang->line('orders') ?></a>
                                 </li>
                                 <li class="nav-item">
@@ -404,12 +423,22 @@
                             </div>
                         </div>                        
                     </div>
-                    <div class="col-sm-6 draft_item" style="display:none;">
-                        <h1>Table's Order</h1>
+                    <div class="col-sm-6 paid_item" style="display:none;">
+                        <h1>Paid Order</h1>
                         <div>
-                            <?php foreach ($draft_list as $rowd) {
-                                echo '<li class="indigo p-1"><a href="' . base_url() . 'pos_invoices/draft?id=' . $rowd['id'] . '"><span class="alert alert-primary alertclass">' . $rowd['table_no'] . '</span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: '. amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) .'</span> &nbsp;&nbsp;(Date: '. $rowd['invoicedate'] . ')</a></li>';
-                            } ?>
+                            <span style="color:red">When the table is empty please click on the below orders.</span>
+                            <span style="color:red">Otherwise, the table shows busy in the system.</span>
+                            <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 1 && $rowd['draft_id'] == 0){ ?>
+                                <li class="indigo p-1"><a href="<?php echo base_url('kitchen/update_order_status/'.$rowd['id']) ?>"><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclassprimary"><?php echo $rowd['status'] == 0 ? 'Ready to Cook' : 'Served to Guest' ?></span>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
+                            <?php } } } ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 draft_item" style="display:none;">
+                        <h1>Unpaid Order</h1>
+                        <div>
+                            <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 0 && $rowd['draft_id'] == 1){ ?>
+                                <li class="indigo p-2"><a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclassprimary"><?php echo $rowd['status'] == 0 ? 'Ready to Cook' : 'Served to Guest' ?></span>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
+                            <?php } } } ?>
                         </div>
                     </div>
                 </section>
@@ -970,9 +999,23 @@
 </div>
 <script type="text/javascript">
     $("#base-tab3").click(function(){
-        $(".chat_window").addClass("col-sm-6").removeClass("col-sm-12");
-        $(".draft_item").show();
-        $("#tab3").hide();
+        var id=$(this).attr('data-id');
+        if(id ==0){
+            $(".chat_window").addClass("col-sm-6").removeClass("col-sm-12");
+            $(".draft_item").show();
+            $('.chat_window').hide();
+            $("#tab3").hide();
+            $(".paid_item").show();
+            $("#base-tab3").attr('data-id','1');
+        }else{
+            $(".chat_window").addClass("col-sm-12").removeClass("col-sm-6");
+            $(".draft_item").hide();
+            $(".paid_item").hide();
+            $('.chat_window').show();
+            $("#tab3").show();
+            $("#base-tab3").attr('data-id','0');
+
+        }
     })
 
 

@@ -17,8 +17,8 @@
                 <div id="customer-box-result" class="col-md-12"></div>
                 <div id="customer" class="col-md-12 ml-3">
                     <div class="clientinfo">
-                        <input type="hidden" name="customer_id" id="customer_id"
-                               value="<?= $invoice['csd'] ?>">
+                        <input type="hidden" name="table_id" id="table_id" value="<?= $invoice['table_id'] ?>">
+                        <input type="hidden" name="customer_id" id="customer_id" value="<?= $invoice['csd'] ?>">
                         <div id="customer_name"><strong><?= $invoice['name'] ?></strong></div>
                     </div>
                 </div>

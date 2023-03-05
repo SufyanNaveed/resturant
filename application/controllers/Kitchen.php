@@ -44,7 +44,23 @@ class Kitchen extends CI_Controller
         $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
         $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.status',0);
-        $data['orders'] = $this->db->get()->result_array();
+        $this->db->where('orders.draft_id',0);
+        $paid_orders = $this->db->get()->result_array();
+
+        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name');
+        $this->db->from('orders');
+        $this->db->join('geopos_draft', 'geopos_draft.id = orders.kot', 'left');
+        $this->db->join('geopos_draft_items', 'geopos_draft_items.tid = orders.kot', 'left');
+        $this->db->join('geopos_products', 'geopos_products.pid = geopos_draft_items.pid', 'left');
+        $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
+        $this->db->join('tables', 'tables.id = orders.table_id', 'left');
+        $this->db->join('geopos_customers', 'geopos_customers.id = geopos_draft.csd', 'left');
+        $this->db->where('geopos_products.kitchen_id',$kitchen_id);
+        $this->db->where('orders.status',0);
+        $this->db->where('orders.draft_id',1);
+        $unpaid_orders = $this->db->get()->result_array();
+        $data['orders'] = array_merge($paid_orders, $unpaid_orders);
+        
         $data['kitchen_id'] = $kitchen_id;
 
         //echo '<pre>'; print_r($this->db->last_query()); exit;
@@ -66,17 +82,23 @@ class Kitchen extends CI_Controller
         $this->load->view('fixed/footer');
     }
 
-    public function update_order_status()
+    public function update_order_status($order)
     {
-        $order_id = $this->input->post('order_id', true); 
+        $order_id = $order == 0 ? $this->input->post('order_id', true) : $order; 
+        $status = $order == 0 ? 1 : 2; 
         
         $data = array(
-            'status' => 1  
+            'status' => $status
         );
+        //echo '<pre>'; print_r($data); exit;
         $this->db->set($data);
         $this->db->where('id',$order_id);
         if($this->db->update('orders')) {
-            echo true;
+            if($status == 2){
+                redirect('pos_invoices/create');
+            }else{
+                echo true;
+            }
         } else {
             echo false;
         }

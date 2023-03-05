@@ -86,6 +86,11 @@ class Pos_invoices extends CI_Controller
         $this->db->join('floors','tables.floor_id = floors.id','left');
         $data['tables'] = $this->db->get()->result_array();
 
+        $this->db->select('orders.table_id');
+        $this->db->from('orders');
+        $this->db->where_in('orders.status',[0,1]);
+        $data['busy_tables'] = $this->db->get()->result_array(); 
+        
         $data['taxlist'] = $this->common->taxlist($this->config->item('tax'));
         $data['gateway'] = $this->invocies->gateway_list('Yes');
         $data['exchange'] = $this->plugins->universal_api(5);
@@ -374,7 +379,7 @@ class Pos_invoices extends CI_Controller
                     'invoice_id' => $invocieno_n, 
                     'kot' => $invocieno,
                     'payment' => 1, 
-                    'status' => 0,
+                    'status' => $draft_id > 0 ? 2 :0,
                     'table_id' => $table_id,
                     'created_by' => $this->aauth->get_user()->id,
                     'loc' => $this->aauth->get_user()->loc
@@ -822,6 +827,7 @@ class Pos_invoices extends CI_Controller
                 'kot' => $invocieno,
                 'payment' => 0, 
                 'status' => 0,
+                'draft_id' => 1,
                 'table_id' => $table_id,
                 'created_by' => $this->aauth->get_user()->id,
                 'loc' => $this->aauth->get_user()->loc
@@ -947,6 +953,7 @@ class Pos_invoices extends CI_Controller
             if($draft_id>0){
                  $this->db->delete('geopos_draft', array('id' => $draft_id));
                 $this->db->delete('geopos_draft_items', array('tid' => $draft_id));
+                $this->db->delete('orders', array('kot' => $draft_id));
             }
         }
         //profit calculation
