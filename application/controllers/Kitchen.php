@@ -82,7 +82,7 @@ class Kitchen extends CI_Controller
         $this->load->view('fixed/footer');
     }
 
-    public function update_order_status($order)
+    public function update_order_status($order=0)
     {
         $order_id = $order == 0 ? $this->input->post('order_id', true) : $order; 
         $status = $order == 0 ? 1 : 2; 
