@@ -18,7 +18,7 @@
     padding: 3px 6px;
 }
 .table th, .table td{
-    padding: 0.75rem 1.5rem !important;
+    padding: 0.75rem 1.0rem !important;
 }
 .mark_as_cooked_btn{
     margin-left: 15px;
@@ -74,8 +74,8 @@
                                                     <td><?php echo $order['cus_name']; ?></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Table</th>
-                                                    <td><?php echo $order['table_no']; ?></td>
+                                                    <th>Floor - Table</th>
+                                                    <td><?php echo $order['floor_num'].'&nbsp; - &nbsp;'.$order['table_no']; ?></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Payment Status</th>

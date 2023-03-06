@@ -66,15 +66,42 @@ class Pos_invoices_model extends CI_Model
 
     }
 
-    public function invoice_products($id)
+    public function draft_invoice_details($id, $eid = '',$loc=null)
     {
 
+        $this->db->select('geopos_draft.*, SUM(geopos_draft.shipping + geopos_draft.ship_tax) AS shipping,geopos_customers.*,geopos_draft.loc as loc,geopos_draft.id AS iid,geopos_customers.id AS cid,geopos_terms.id AS termid,geopos_terms.title AS termtit,geopos_terms.terms AS terms');
+        $this->db->from('geopos_draft');
+        $this->db->where('geopos_draft.id', $id);
+        if ($eid) {
+            $this->db->where('geopos_draft.eid', $eid);
+        }
+        if (@$this->aauth->get_user()->loc) {
+            $this->db->where('geopos_draft.loc', $this->aauth->get_user()->loc);
+        }  elseif(!BDATA and !$loc) { $this->db->where('geopos_draft.loc', 0); }
+        if($loc){ $this->db->where('geopos_draft.loc', $loc); }
+        $this->db->join('geopos_customers', 'geopos_draft.csd = geopos_customers.id', 'left');
+        $this->db->join('geopos_terms', 'geopos_terms.id = geopos_draft.term', 'left');
+        $query = $this->db->get();
+        return $query->row_array();
+
+    }
+
+    public function invoice_products($id)
+    {
         $this->db->select('*');
         $this->db->from('geopos_invoice_items');
         $this->db->where('tid', $id);
         $query = $this->db->get();
         return $query->result_array();
+    }
 
+    public function draft_invoice_products($id)
+    {
+        $this->db->select('*');
+        $this->db->from('geopos_draft_items');
+        $this->db->where('tid', $id);
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
     public function currencies()
@@ -375,15 +402,17 @@ class Pos_invoices_model extends CI_Model
         // $query = $this->db->get();
         // return $query->result_array();
 
-        $this->db->select('orders.*, tables.table_no');
+        $this->db->select('orders.*, tables.table_no, floors.floor_num');
         $this->db->from('orders');
         // $this->db->join('geopos_invoices', 'geopos_invoices.id = orders.kot', 'left');
         // $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = orders.kot', 'left');
         // $this->db->join('geopos_products', 'geopos_products.pid = geopos_invoice_items.pid', 'left');
         // $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
         $this->db->join('tables', 'tables.id = orders.table_id', 'left');
+        $this->db->join('floors', 'floors.id = tables.floor_id', 'left');
         // $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
         // $this->db->where('geopos_products.kitchen_id',$kitchen_id);
+        $this->db->where('orders.loc', $this->aauth->get_user()->loc);
         $this->db->where('orders.status !=',2);
         $this->db->limit(12);
         $query = $this->db->get();

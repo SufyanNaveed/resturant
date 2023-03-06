@@ -34,26 +34,28 @@ class Kitchen extends CI_Controller
         // $this->load->model('pos_invoices_model', 'invocies');
         // $data['kitchen_orders'] = $this->invocies->drafts($kitchen_id);
 
-        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name');
+        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name, floors.floor_num');
         $this->db->from('orders');
         $this->db->join('geopos_invoices', 'geopos_invoices.id = orders.kot', 'left');
         $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = orders.kot', 'left');
         $this->db->join('geopos_products', 'geopos_products.pid = geopos_invoice_items.pid', 'left');
         $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
         $this->db->join('tables', 'tables.id = orders.table_id', 'left');
+        $this->db->join('floors', 'floors.id = tables.floor_id', 'left');
         $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
         $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.status',0);
         $this->db->where('orders.draft_id',0);
         $paid_orders = $this->db->get()->result_array();
 
-        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name');
+        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name, floors.floor_num');
         $this->db->from('orders');
         $this->db->join('geopos_draft', 'geopos_draft.id = orders.kot', 'left');
         $this->db->join('geopos_draft_items', 'geopos_draft_items.tid = orders.kot', 'left');
         $this->db->join('geopos_products', 'geopos_products.pid = geopos_draft_items.pid', 'left');
         $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
         $this->db->join('tables', 'tables.id = orders.table_id', 'left');
+        $this->db->join('floors', 'floors.id = tables.floor_id', 'left');
         $this->db->join('geopos_customers', 'geopos_customers.id = geopos_draft.csd', 'left');
         $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.status',0);

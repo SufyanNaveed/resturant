@@ -63,7 +63,7 @@
         <?php } ?>
         <tr>
             <td><?php echo $this->lang->line('Invoice') ?></td>
-            <td><?php echo $this->config->item('prefix') . ' #' . $invoice['tid'] ?></td>
+            <td><?php echo $draft_id ? 'KOT #' . $invoice['tid'] : $this->config->item('prefix').' #' . $invoice['tid'] ?></td>
         </tr>
         <tr>
             <td><?php echo $this->lang->line('Invoice Date') ?></td>
@@ -153,8 +153,8 @@
         $this->pheight = $this->pheight + 40;
         ?>
         <div class="text-center">
-            <small><?php echo $this->lang->line('Scan & Pay') ?></small>
-            <img style="max-height:230px;" src='<?php echo base_url('userfiles/pos_temp/' . $qrc) ?>' alt='QR'></div>
+            <!-- <small><?php echo $this->lang->line('Scan & Pay') ?></small> -->
+            <img style="max-height:100px;" src='<?php echo base_url('userfiles/pos_temp/' . $qrc) ?>' alt='QR'></div>
     <?php } else {
         echo '<div class="stamp">' . $this->lang->line(ucwords($invoice['status'])) . '</div>';
     } ?>

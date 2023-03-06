@@ -369,7 +369,7 @@
     <input type="hidden" value="<?php
     $tt = 0;
     if ($invoice['ship_tax_type'] == 'incl') $tt = @number_format(($invoice['shipping'] - $invoice['ship_tax']) / $invoice['shipping'], 2, '.', '');
-    echo amountFormat_general(number_format((($invoice['ship_tax'] / $invoice['shipping']) * 100) + $tt, 3, '.', '')); ?>"
+    echo $invoice['shipping'] > 0 ? amountFormat_general(number_format((($invoice['ship_tax'] / $invoice['shipping']) * 100) + $tt, 3, '.', '')) : 0; ?>"
            name="shipRate" id="ship_rate">
     <input type="hidden" value="<?= $invoice['ship_tax_type']; ?>" name="ship_taxtype"
            id="ship_taxtype">
@@ -631,9 +631,12 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <button class="btn btn-success btn-lg btn-block mb-1"
-                                    type="submit"
-                                    id="pos_basic_pay" data-type="4"><i
+                        
+                            <a href="<?php echo base_url().'pos_invoices/thermal_pdf?id='.$invoice['iid'].'&draft_id=1'; ?>" target="_blank" class="btn btn-blue btn-lg btn-block mb-1" >
+                                <i class="fa fa-arrow-circle-o-right"></i> 
+                                <?php echo $this->lang->line('generate_recipt') ?>
+                            </a>
+                            <button class="btn btn-success btn-lg btn-block mb-1" type="submit" id="pos_basic_pay" data-type="4"><i
                                         class="fa fa-arrow-circle-o-right"></i> <?php echo $this->lang->line('Paynow') ?>
                             </button>
                             <button class="btn btn-info btn-lg btn-block"

@@ -30,11 +30,29 @@
     color: white !important;
 }
 
+.alertclassinfo{
+    padding: 4px;
+    font-size: 13px;
+    font-weight: 900;
+    background-color: #2196f3 !important;
+    border-color: #2196f3 !important;
+    color: white !important;
+}
+
 .alertclassprimary{
     padding: 4px;
     font-size: 13px;
     font-weight: 900;
+    background-color: #b360c4 !important;
+    border-color: #b360c4 !important;
+    color: white !important;
+}
+.alertclassprimaryserved{
+    padding: 4px;
+    font-size: 13px;
+    font-weight: 900;
     background-color: #359393 !important;
+    border-color: #359393 !important;
     color: white !important;
 }
 .alertclassdanger{
@@ -283,9 +301,9 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="tab3" role="tabpanel" aria-labelledby="base-tab3">
-                                    <?php foreach ($draft_list as $rowd) { ?>
-                                        <li class="indigo p-1"><a <?php if($rowd['payment'] == 0) { echo 'href="'.base_url().'pos_invoices/draft?id='.$rowd['id'].'"'; } ?> ><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: <?php echo amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) ?> </span> &nbsp;&nbsp;(Date: <?php echo $rowd['invoicedate']; ?>)</a></li>';
-                                    <?php } ?>
+                                    <?php //foreach ($draft_list as $rowd) { ?>
+                                        <!-- <li class="indigo p-1"><a <?php if($rowd['payment'] == 0) { echo 'href="'.base_url().'pos_invoices/draft?id='.$rowd['id'].'"'; } ?> ><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-danger alertclassdanger" id="bill">Bill Payment: <?php echo amountExchange($rowd['subtotal'], 0, $this->aauth->get_user()->loc) ?> </span> &nbsp;&nbsp;(Date: <?php echo $rowd['invoicedate']; ?>)</a></li>'; -->
+                                    <?php //} ?>
                                 </div>
                                 <div class="tab-pane" id="tab4" role="tabpanel" aria-labelledby="base-tab4">
                                     <div class="form-group row">
@@ -424,20 +442,25 @@
                         </div>                        
                     </div>
                     <div class="col-sm-6 paid_item" style="display:none;">
-                        <h1>Paid Order</h1>
+                        <h1>Prepaid Order</h1>
                         <div>
                             <span style="color:red">When the table is empty please click on the below orders.</span>
                             <span style="color:red">Otherwise, the table shows busy in the system.</span>
                             <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 1 && $rowd['draft_id'] == 0){ ?>
-                                <li class="indigo p-1"><a href="<?php echo base_url('kitchen/update_order_status/'.$rowd['id']) ?>"><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclassprimary"><?php echo $rowd['status'] == 0 ? 'Ready to Cook' : 'Served to Guest' ?></span>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
+                                <li class="indigo p-1 text-center"><a href="<?php echo base_url('kitchen/update_order_status/'.$rowd['id']) ?>"><span class="alert alert-info alertclassinfo"><?php echo 'KOT # '.$rowd['invoice_id'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclass"><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp;<br><br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve to Guest</span>' ?>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
                             <?php } } } ?>
                         </div>
                     </div>
                     <div class="col-sm-6 draft_item" style="display:none;">
-                        <h1>Unpaid Order</h1>
+                        <h1>Postpaid Order</h1>
                         <div>
                             <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 0 && $rowd['draft_id'] == 1){ ?>
-                                <li class="indigo p-2"><a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span class="alert alert-primary alertclass"><?php echo $rowd['table_no'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclassprimary"><?php echo $rowd['status'] == 0 ? 'Ready to Cook' : 'Served to Guest' ?></span>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
+                                <li class="indigo p-2 text-center"><a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span class="alert alert-info alertclassinfo"><?php echo 'KOT # '.$rowd['invoice_id'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclass"><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp; 
+                                <a style="padding: 1rem 0.5rem;border-radius: 2.21rem;color:white;" href="<?php echo base_url().'pos_invoices/thermal_pdf?id='.$rowd['kot'].'&draft_id=1'; ?>" target="_blank" class="btn btn-blue btn-sm">
+                                    <i class="fa fa-arrow-circle-o-right"></i> 
+                                    <?php echo $this->lang->line('generate_recipt') ?>
+                                </a>
+                                <br><br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve to Guest</span>' ?>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
                             <?php } } } ?>
                         </div>
                     </div>

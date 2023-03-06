@@ -140,6 +140,7 @@ class Pos_invoices extends CI_Controller
         $data['terms'] = $this->invocies->billingterms();
         $data['currency'] = $this->invocies->currencies();
         $data['invoice'] = $this->invocies->draft_details($tid, $this->limited);
+        // echo '<pre>'; print_r($data['invoice']); exit;
         if ($data['invoice']['id']) $data['products'] = $this->invocies->draft_products($tid);
         $head['title'] = "Edit Invoice #$tid";
         $head['usernm'] = $this->aauth->get_user()->username;
@@ -1813,13 +1814,22 @@ echo 6;
     function thermal_pdf()
     {
         $tid = $this->input->get('id');
+        $draft_id = $this->input->get('draft_id');
         $data['id'] = $tid;
+        $data['draft_id'] = $draft_id;
         $data['title'] = "Invoice $tid";
-        $data['invoice'] = $this->invocies->invoice_details($tid, $this->limited);
+        //echo $tid.'<pre>'.$draft_id;exit;
+        if($draft_id){
+            $data['invoice'] = $this->invocies->draft_invoice_details($tid, $this->limited);
+            if ($data['invoice']) $data['products'] = $this->invocies->draft_invoice_products($tid);
+        }else{
+            $data['invoice'] = $this->invocies->invoice_details($tid, $this->limited);
+            if ($data['invoice']) $data['products'] = $this->invocies->invoice_products($tid);
+        }
         $data['round_off'] = $this->custom->api_config(4);
 
-        if ($data['invoice']) $data['products'] = $this->invocies->invoice_products($tid);
         if ($data['invoice']) $data['employee'] = $this->invocies->employee($data['invoice']['eid']);
+
         $this->load->model('billing_model', 'billing');
         $online_pay = $this->billing->online_pay_settings();
         if ($online_pay['enable'] == 1) {
@@ -1836,8 +1846,8 @@ echo 6;
             $result = $writer->write($qrCode);
             $result->saveToFile(FCPATH . 'userfiles/pos_temp/' . $data['qrc']);
            // $qrCode = new QrCode(base_url('billing/view?id=' . $tid . '&itype=inv&token=' . $token));
-//header('Content-Type: '.$qrCode->getContentType());
-//echo $qrCode->writeString();
+            //header('Content-Type: '.$qrCode->getContentType());
+            //echo $qrCode->writeString();
            // $qrCode->writeFile(FCPATH . 'userfiles/pos_temp/' . $data['qrc']);
         }
         // boost the memory limit if it's low ;)
