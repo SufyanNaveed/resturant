@@ -31,10 +31,7 @@ class Kitchen extends CI_Controller
 
     public function view_orders($kitchen_id)
     {
-        // $this->load->model('pos_invoices_model', 'invocies');
-        // $data['kitchen_orders'] = $this->invocies->drafts($kitchen_id);
-
-        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name, floors.floor_num');
+        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, floors.floor_num');
         $this->db->from('orders');
         $this->db->join('geopos_invoices', 'geopos_invoices.id = orders.kot', 'left');
         $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = orders.kot', 'left');
@@ -46,9 +43,10 @@ class Kitchen extends CI_Controller
         $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.status',0);
         $this->db->where('orders.draft_id',0);
+        $this->db->group_by('orders.invoice_id');
         $paid_orders = $this->db->get()->result_array();
 
-        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, kitchen.kitchen_name, floors.floor_num');
+        $this->db->select('orders.*, tables.table_no, geopos_customers.name as cus_name, floors.floor_num');
         $this->db->from('orders');
         $this->db->join('geopos_draft', 'geopos_draft.id = orders.kot', 'left');
         $this->db->join('geopos_draft_items', 'geopos_draft_items.tid = orders.kot', 'left');
@@ -60,13 +58,14 @@ class Kitchen extends CI_Controller
         $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.status',0);
         $this->db->where('orders.draft_id',1);
+        $this->db->group_by('orders.invoice_id');
         $unpaid_orders = $this->db->get()->result_array();
         $data['orders'] = array_merge($paid_orders, $unpaid_orders);
         
         $data['kitchen_id'] = $kitchen_id;
 
         //echo '<pre>'; print_r($this->db->last_query()); exit;
-        //echo '<pre>'; print_r($data); exit;
+        //echo '<pre>'; print_r($data['orders']); exit;
         $head['title'] = "Kitchen Orders";
         $head['usernm'] = $this->aauth->get_user()->username;
         $this->load->view('fixed/header', $head);
@@ -86,13 +85,14 @@ class Kitchen extends CI_Controller
 
     public function update_order_status($order=0)
     {
+        $order = $this->input->post('order', true);
         $order_id = $order == 0 ? $this->input->post('order_id', true) : $order; 
         $status = $order == 0 ? 1 : 2; 
         
         $data = array(
             'status' => $status
         );
-        //echo '<pre>'; print_r($data); exit;
+        // echo '<pre>'; print_r($data); exit;
         $this->db->set($data);
         $this->db->where('id',$order_id);
         if($this->db->update('orders')) {

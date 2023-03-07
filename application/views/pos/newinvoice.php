@@ -4,7 +4,7 @@
     background: #d0efe5;
     margin-bottom: 10px;
     width: 100%;
-    padding: 20px 10px !important;
+    padding: 10px 10px 38px 10px!important;
     list-style-type: none;
     margin-top: 15px;
 }
@@ -12,13 +12,12 @@
 .indigo.p-2 > a{
     color: black;
 }
-
-.indigo.p-2{
+.indigo.p-2 {
     border: 1px solid black;
     background: #ffbcc6;
     margin-bottom: 10px;
     width: 100%;
-    padding: 20px 10px !important;
+    padding: 10px 10px 38px 10px!important;
     list-style-type: none;
     margin-top: 15px;
 }
@@ -46,6 +45,7 @@
     background-color: #b360c4 !important;
     border-color: #b360c4 !important;
     color: white !important;
+    float:left;
 }
 .alertclassprimaryserved{
     padding: 4px;
@@ -54,6 +54,7 @@
     background-color: #359393 !important;
     border-color: #359393 !important;
     color: white !important;
+    float:left;
 }
 .alertclassdanger{
     padding: 4px;
@@ -61,9 +62,9 @@
     font-weight: 900;
 }
 .vr {
-    border-left: 2px solid #a7afa7;
-    height: 300px;
-    margin: 0px 5px 0px 5px;
+    border-left: 2px solid #2591c8;
+    height: auto;
+    margin: 0px -2px 0px -1px;
 }
 </style>
 
@@ -442,25 +443,37 @@
                         </div>                        
                     </div>
                     <div class="col-sm-6 paid_item" style="display:none;">
-                        <h1>Prepaid Order</h1>
+                        <h1>Pre-paid Order(s)</h1>
                         <div>
-                            <span style="color:red">When the table is empty please click on the below orders.</span>
-                            <span style="color:red">Otherwise, the table shows busy in the system.</span>
                             <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 1 && $rowd['draft_id'] == 0){ ?>
-                                <li class="indigo p-1 text-center"><a href="<?php echo base_url('kitchen/update_order_status/'.$rowd['id']) ?>"><span class="alert alert-info alertclassinfo"><?php echo 'KOT # '.$rowd['invoice_id'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclass"><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp;<br><br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve to Guest</span>' ?>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
+                                <li class="indigo p-1 text-center">
+                                    <a><span><strong><?php echo 'KOT # '.$rowd['invoice_id'] ?></strong></span>&nbsp;&nbsp; <span><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp;
+                                        <br><span><?php echo $rowd['created_at']; ?></span>&nbsp;&nbsp;
+                                        <br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve Order</span>' ?>
+                                    </a>
+                                    <a style="padding: 0.58rem 0.5rem;color:white;float:right " href="javascript:void(0)" data-object-id="<?php echo $rowd['id']; ?>" class="btn btn-blue btn-sm delete-object">
+                                        <i class="fa fa-arrow-circle-o-right"></i> 
+                                        <?php echo $this->lang->line('clear_table') ?>
+                                    </a>
+                                </li>
                             <?php } } } ?>
                         </div>
                     </div>
+                    <div class="vr"></div>
                     <div class="col-sm-6 draft_item" style="display:none;">
-                        <h1>Postpaid Order</h1>
+                        <h1>Post-paid Order(s)</h1>
                         <div>
                             <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 0 && $rowd['draft_id'] == 1){ ?>
-                                <li class="indigo p-2 text-center"><a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span class="alert alert-info alertclassinfo"><?php echo 'KOT # '.$rowd['invoice_id'] ?></span>&nbsp;&nbsp; <span class="alert alert-primary alertclass"><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp; 
-                                <a style="padding: 1rem 0.5rem;border-radius: 2.21rem;color:white;" href="<?php echo base_url().'pos_invoices/thermal_pdf?id='.$rowd['kot'].'&draft_id=1'; ?>" target="_blank" class="btn btn-blue btn-sm">
-                                    <i class="fa fa-arrow-circle-o-right"></i> 
-                                    <?php echo $this->lang->line('generate_recipt') ?>
-                                </a>
-                                <br><br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve to Guest</span>' ?>&nbsp;&nbsp;(Date: <?php echo $rowd['created_at']; ?>)</a></li>
+                                <li class="indigo p-2 text-center">
+                                    <a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span><strong><?php echo 'KOT # '.$rowd['invoice_id'] ?></strong></span>&nbsp;&nbsp; <span><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp; 
+                                        <br><span><?php echo $rowd['created_at']; ?></span>&nbsp;&nbsp;                                     
+                                        <br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve Order</span>' ?>
+                                    </a>
+                                    <a style="padding: 0.58rem 0.5rem;color:white;float:right " href="<?php echo base_url().'pos_invoices/thermal_pdf?id='.$rowd['kot'].'&draft_id=1'; ?>" target="_blank" class="btn btn-blue btn-sm">
+                                        <i class="fa fa-arrow-circle-o-right"></i> 
+                                        <?php echo $this->lang->line('generate_recipt') ?>
+                                    </a>
+                                </li>
                             <?php } } } ?>
                         </div>
                     </div>
@@ -1020,7 +1033,52 @@
 
     </div>
 </div>
+
+<div id="delete_model" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><?php echo $this->lang->line('clear') ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p><?php echo $this->lang->line('clear this table') ?></strong></p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="object-id" value="">
+                <input type="hidden" id="action-url-clear" value="kitchen/update_order_status">
+                <button type="button" data-dismiss="modal" class="btn btn-primary"
+                        id="table-confirm"><?php echo $this->lang->line('yes') ?></button>
+                <button type="button" data-dismiss="modal"
+                        class="btn"><?php echo $this->lang->line('no') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
+
+    $("#table-confirm").on("click", function() {
+        var o_data = 'order=' + $('#object-id').val();
+        var action_url= $('#action-url-clear').val();
+        $('#'+$('#object-id').val()).remove();
+        update_table_status(o_data,action_url);
+    });
+
+
+    function update_table_status(action,action_url) {
+        jQuery.ajax({
+            url: baseurl + action_url,
+            type: 'POST',
+            data: action,
+            dataType: 'json',
+            success: function (data) {
+                return true;
+            }
+        });
+        window.location.reload();
+    }
+
+
     $("#base-tab3").click(function(){
         var id=$(this).attr('data-id');
         if(id ==0){

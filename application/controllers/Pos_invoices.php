@@ -271,6 +271,7 @@ class Pos_invoices extends CI_Controller
         } else {
             $emp = $this->aauth->get_user()->id;
         }
+
         if ($ptype == 4) {
             $loop_counter = $this->input->post('counter_val');
             $p_amount = 0;
@@ -358,6 +359,19 @@ class Pos_invoices extends CI_Controller
                 $this->db->where('i_class', 1);
                 $query = $this->db->get();
                 $invocieno=$query->row()->tid+1;
+            }
+
+            
+            $this->db->from('orders');
+            $this->db->where('invoice_id',$invocieno);
+            $invoices = $this->db->get();
+            if($invoices->num_rows() > 0){
+                $invoices = $invoices->row_array();
+                if($draft_id){
+                    $invocieno = $invoices['invoice_id'];
+                }else{
+                    $invocieno = $invoices['invoice_id']+1;
+                }
             }
 
             $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 
@@ -817,6 +831,15 @@ class Pos_invoices extends CI_Controller
             $bill_date = datefordatabase($invoicedate);
             $bill_due_date = datefordatabase($invocieduedate);
             $promo_flag = false;
+
+            $this->db->from('orders');
+            $this->db->where('invoice_id',$invocieno);
+            $invoices = $this->db->get();
+            if($invoices->num_rows() > 0){
+                $invoices = $invoices->row_array(); 
+                $invocieno = $invoices['invoice_id']+1;
+            }
+        
             $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'pmethod' => $pmethod, 'notes' => $notes, 'status' => $status, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'pamnt' => 0, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms,
             'multi' => $currency, 'i_class' => 1, 'loc' => $this->aauth->get_user()->loc, 'table_id' => $table_id);
             if ($this->db->insert('geopos_draft', $data)) {

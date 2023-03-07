@@ -691,6 +691,7 @@ $lang['Thermal Printer'] = "Thermal Printer";
 $lang['Other'] = "Other";
 $lang['Thank you'] = "Thank you! ";
 $lang['generate_recipt'] = "Generate Recipt";
+$lang['clear_table'] = "Clear Table";
 $lang['POS Print'] = "POS Print";
 $lang['PDF Print'] = "PDF Print";
 $lang['Thermal Print'] = "Thermal Print";
@@ -977,3 +978,8 @@ $lang['delete this table'] = "Are you sure you want to delete this Table?";
 
 $lang['place_order'] = "Place Order";
 $lang['orders'] = "Orders";
+$lang['clear'] = "Complete Order";
+$lang['yes'] = "Yes";
+$lang['no'] = "No";
+$lang['clear this table'] = "This will free the table. Are you sure?";
+$lang['available_data_in_kitchen'] = "No order available in Kitchen";

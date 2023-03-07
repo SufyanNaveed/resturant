@@ -2,6 +2,7 @@
 .small-box{    
     border: 1px solid #d5d3d3;
     background: #e8eced;
+    border-radius: 20px;
 }
 .inner > h4{
     padding-top: 15px;
@@ -85,10 +86,10 @@
                                     </table>
                                 </div>
                                 <a href="javascript:void(0)" class="btn btn-success small-box-footer mark_as_cooked_btn" data-order_id="<?php echo $order['id'] ?>"><i class="fa fa-check-square-o"></i> Mark as cooked</a>
-                                <a href="#" class="btn btn-info small-box-footer btn-modal" data-href="https://pos.ultimatefosters.com/sells/881" data-container=".view_modal">Order details <i class="fa fa-arrow-circle-right"></i></a>
+                                <a href="#" class="btn btn-info small-box-footer btn-modal" data-href="" data-container=".view_modal">Order details <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
-                    <?php } } ?>
+                    <?php } }else{ echo '<span style="padding: 0px 620px;">'.$this->lang->line('available_data_in_kitchen').'</span>'; } ?>
                 </div>
             </div>
         </div>
