@@ -85,7 +85,8 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <a href="javascript:void(0)" class="btn btn-success small-box-footer mark_as_cooked_btn" data-order_id="<?php echo $order['id'] ?>"><i class="fa fa-check-square-o"></i> Mark as cooked</a>
+                                
+                                <a href="javascript:void(0)" class="btn btn-success small-box-footer delete-object" data-object-id="<?php echo $order['id'] ?>"><i class="fa fa-check-square-o"></i> Mark as cooked</a>
                                 <a href="#" class="btn btn-info small-box-footer btn-modal" data-href="" data-container=".view_modal">Order details <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -94,40 +95,38 @@
             </div>
         </div>
         
-    <div id="delete_model" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-
-                    <h4 class="modal-title"><?php echo $this->lang->line('Delete') ?></h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <p><?php echo $this->lang->line('delete this kitchen') ?></strong></p>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" id="object-id" value="">
-                    <input type="hidden" id="action-url" value="kitchen/delete">
-                    <button type="button" data-dismiss="modal" class="btn btn-primary"
-                            id="delete-confirm"><?php echo $this->lang->line('Delete') ?></button>
-                    <button type="button" data-dismiss="modal"
-                            class="btn"><?php echo $this->lang->line('Cancel') ?></button>
-                </div>
+<div id="delete_model" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><?php echo $this->lang->line('cooked') ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p><?php echo $this->lang->line('cooked_order') ?></strong></p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="object-id" value="">
+                <input type="hidden" id="action-url-clear" value="kitchen/update_order_status">
+                <button type="button" data-dismiss="modal" class="btn btn-primary"
+                        id="table-confirm"><?php echo $this->lang->line('yes') ?></button>
+                <button type="button" data-dismiss="modal"
+                        class="btn"><?php echo $this->lang->line('no') ?></button>
             </div>
         </div>
     </div>
+</div>
 
 
 
 <script> 
+    
     $(function () {
         'use strict';
         
-        $('.mark_as_cooked_btn').click(function (e) { 
-            var order_id = $(this).attr('data-order_id');
+        $('#table-confirm').click(function (e) { 
+            var order_id = $('#object-id').val();
             jQuery.ajax({
-
                 url: baseurl + 'kitchen/update_order_status',
                 type: 'POST',
                 dataType: 'json',
