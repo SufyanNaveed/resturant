@@ -86,19 +86,19 @@ class Kitchen extends CI_Controller
         $this->db->where('orders.id',$order_id);
         $check_invoice_or_draft = $this->db->get()->row_array();
 
-        $this->db->select('orders.*, tables.table_no, gp.product_name, online_order.name as online_app_name');
+        $this->db->select('orders.*, tables.table_no, gp.product_name, gi.qty, online_order.name as online_app_name');
         $this->db->from('orders');
         $this->db->join('tables', 'tables.id = orders.table_id', 'left');
         $this->db->join('online_order', 'online_order.id = orders.online_id', 'left');
         if($check_invoice_or_draft['draft_id'] == 1){
             $this->db->join('geopos_draft', 'geopos_draft.tid = orders.invoice_id', 'left');
-            $this->db->join('geopos_draft_items', 'geopos_draft_items.tid = geopos_draft.id', 'left');
-            $this->db->join('geopos_products gp', 'gp.pid = geopos_draft_items.pid', 'left');
+            $this->db->join('geopos_draft_items gi', 'gi.tid = geopos_draft.id', 'left');
+            $this->db->join('geopos_products gp', 'gp.pid = gi.pid', 'left');
             $this->db->where('geopos_draft.tid',$invoice_id);
         }else{
             $this->db->join('geopos_invoices', 'geopos_invoices.tid = orders.invoice_id', 'left');
-            $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = geopos_invoices.id', 'left');
-            $this->db->join('geopos_products gp', 'gp.pid = geopos_invoice_items.pid', 'left');
+            $this->db->join('geopos_invoice_items gi', 'gi.tid = geopos_invoices.id', 'left');
+            $this->db->join('geopos_products gp', 'gp.pid = gi.pid', 'left');
             $this->db->where('geopos_invoices.tid',$invoice_id);
         }
         $orders_products = $this->db->get()->result_array();
@@ -129,10 +129,13 @@ class Kitchen extends CI_Controller
                 <div class="col-sm-8"><span class="alert alert-success">'. $payment_status .'</span></div> 
             </div>
             <hr>';
+            $html .= '<div class="row" style="padding: 7px 0px"><div class="col-sm-6" style="padding-bottom: 10px;"><strong>Products</strong></div><div class="col-sm-6" style="padding-bottom: 10px;"><strong>Quantity</strong></div>';
+
             foreach($orders_products as $key=>$orders_product){
                 $key++;
-                $html .= '<div class="row" style="padding: 7px 0px"><div class="col-sm-4"><strong>Products '. $key .'</strong></div><div class="col-sm-8">'. $orders_product['product_name'] .'</div></div>';
+                $html .= '<div class="col-sm-6">'.$orders_product['product_name'] .'</div><div class="col-sm-6" style="padding-left: 40px;">'. number_format($orders_product['qty']) .'</div>';
             }
+            $html .= '</div>';
             echo $html;
         }
         
