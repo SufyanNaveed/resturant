@@ -491,7 +491,7 @@ class Pos_invoices extends CI_Controller
                     'invoice_id' => $invocieno_n, 
                     'kot' => $invocieno,
                     'payment' => 1, 
-                    'status' => $draft_id > 0 ? 2 :0,
+                    'status' => $draft_id > 0 ? 3 :0,
                     'table_id' => $table_id,
                     'online_id' => $online_id,
                     'delivery_id' => $delivery_id,
