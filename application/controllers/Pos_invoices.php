@@ -85,6 +85,10 @@ class Pos_invoices extends CI_Controller
         $this->db->from('tables');
         $this->db->join('floors','tables.floor_id = floors.id','left');
         $data['tables'] = $this->db->get()->result_array();
+        
+        $this->db->select('*');
+        $this->db->from('online_order');
+        $data['online_order_app'] = $this->db->get()->result_array();
 
         $this->db->select('orders.table_id');
         $this->db->from('orders');
@@ -97,6 +101,7 @@ class Pos_invoices extends CI_Controller
         $data['enable_card'] = $this->plugins->universal_api(54);
         $data['customergrouplist'] = $this->customers->group_list();
         $data['lastinvoice'] = $this->invocies->lastinvoice();
+        $data['lastorder'] = $this->invocies->lastorderid();
         $data['draft_list'] = $this->invocies->drafts();
         $data['warehouse'] = $this->invocies->warehouses();
         $data['terms'] = $this->invocies->billingterms();
@@ -126,7 +131,6 @@ class Pos_invoices extends CI_Controller
         }
         $this->load->view('fixed/footer-pos');
     }
-
 
     public function draft()
     {
@@ -171,7 +175,92 @@ class Pos_invoices extends CI_Controller
         $this->load->view('fixed/footer-pos');
     }
 
+    public function update_order_status($order=0)
+    {
+        $order = $this->input->post('order', true);
+        $data = array(
+            'status' => 2
+        );
+        // echo '<pre>'; print_r($data); exit;
+        $this->db->set($data);
+        $this->db->where('id',$order);
+        if($this->db->update('orders')) {
+            $this->update_running_order();
+            // if($status == 2){
+            //     redirect('pos_invoices/create');
+            // }else{
+            //     echo true;
+            // }
+            // } else {
+            //     echo false;
+        }
+        echo false;
+    }
 
+    public function update_running_order()
+    {
+        $draft_list = $this->invocies->drafts();
+
+        $html = '<div class="col-sm-6 paid_item">'.
+                    '<h1>Pre-paid Order(s)</h1>'.
+                    '<div class="paid_item_orders">';
+                        if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 1 && $rowd['draft_id'] == 0){
+                            $html .= '<li class="indigo p-1 text-center">'.
+                                '<a><span><strong>KOT # '.$rowd['invoice_id'].'</strong></span>&nbsp;&nbsp; <span>';
+                                if($rowd['table_id'] > 0){ 
+                                    $html .= $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no']; 
+                                }elseif($rowd['online_id'] > 0){ 
+                                    $html .= 'Online '.$rowd['order_app_name']. ' Order'; 
+                                } else { 
+                                    $html .= 'Home Delivery'; 
+                                }
+                                $html .= '</span>&nbsp;&nbsp; <br><span>'. $rowd['created_at'].'</span>&nbsp;&nbsp;</a><br>';
+                                if($rowd['status'] == 0){ 
+                                    $html .= '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>'; 
+                                } elseif($rowd['status'] == 1){ 
+                                    $html .= '<a href="javascript:void(0)" class="update-object" data-object-id="'.$rowd['id'].'"><span class="alert alert-primary alertclassprimaryserved alertclassprimaryserved_color">Serve Order</span></a>'; 
+                                } elseif($rowd['status'] == 2){ 
+                                    $html .='<span class="alert alert-primary alertclassprimaryserved">Served Order</span>'; 
+                                } 
+                                $html .= '<a style="padding: 0.58rem 0.5rem;color:white;float:right " href="javascript:void(0)" data-object-id="'.$rowd['id'].'" class="btn btn-blue btn-sm delete-object">'.
+                                    '<i class="fa fa-arrow-circle-o-right"></i> '. $this->lang->line('clear_table'). '</a></li>';
+                            
+                        } } }
+                        $html .= '</div> </div><div class="vr"></div>';                       
+                        
+                        
+                        $html .= '<div class="col-sm-6 draft_item">'.
+                        '<h1>Post-paid Order(s)</h1>'.
+                        '<div class="draft_item_orders">';
+                        if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 0 && $rowd['draft_id'] == 1){
+                            $html .= '<li class="indigo p-2 text-center">'.
+                                '<a href="'.base_url('pos_invoices/draft?id='.$rowd['kot']). '"><span><strong>KOT # '.$rowd['invoice_id'].'</strong></span>&nbsp;&nbsp; <span>';
+                                if($rowd['table_id'] > 0){ 
+                                    $html .=  $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'];
+                                } elseif($rowd['online_id'] > 0){ 
+                                    $html .= 'Online '.$rowd['order_app_name']. ' Order'; 
+                                } else { 
+                                    $html .= 'Home Delivery'; 
+                                }
+                                $html .= '</span>&nbsp;&nbsp; <br><span>'. $rowd['created_at'].' </span>&nbsp;&nbsp; </a> <br>'; 
+                                if($rowd['status'] == 0){ 
+                                    $html .= '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>'; 
+                                } elseif($rowd['status'] == 1){ 
+                                    $html .= '<a href="javascript:void(0)" class="update-object" data-object-id="'.$rowd['id'].'"><span class="alert alert-primary alertclassprimaryserved alertclassprimaryserved_color">Serve Order</span></a>'; 
+                                } elseif($rowd['status'] == 2){ 
+                                    $html .= '<span class="alert alert-primary alertclassprimaryserved">Served Order</span>'; 
+                                }
+                                $html .= '<a style="padding: 0.58rem 0.5rem;color:white;float:center " href="'. base_url().'pos_invoices/edit?id='.$rowd['kot'].'&draft_id=1" class="btn btn-success btn-sm">'.
+                                    '<i class="fa fa-pencil"></i> &nbsp; '. $this->lang->line('Edit').' '.$this->lang->line('Order').' </a>'.
+                                    '<a style="padding: 0.58rem 0.5rem;color:white;float:right " href="'. base_url().'pos_invoices/thermal_pdf?id='.$rowd['kot'].'&draft_id=1" target="_blank" class="btn btn-blue btn-sm">'.
+                                    '<i class="fa fa-arrow-circle-o-right"></i> '. $this->lang->line('generate_recipt') .' </a></li>';
+                            } } }
+                        $html .= '</div></div>';
+
+
+        echo $html;
+    }
+    
     //edit invoice
     public function edit()
     {
@@ -185,14 +274,21 @@ class Pos_invoices extends CI_Controller
         $this->load->model('categories_model');
         $data['gateway'] = $this->invocies->gateway_list('Yes');
         $tid = $this->input->get('id');
+        $draft_id = $this->input->get('draft_id');
         $data['id'] = $tid;
 
         $this->load->model('customers_model', 'customers');
         $data['customergrouplist'] = $this->customers->group_list();
         $data['terms'] = $this->invocies->billingterms();
         $data['currency'] = $this->invocies->currencies();
-        $data['invoice'] = $this->invocies->invoice_details($tid, $this->limited);
-        if ($data['invoice']['id']) $data['products'] = $this->invocies->invoice_products($tid);
+        if($draft_id){
+            $data['invoice'] = $this->invocies->draft_invoice_details($tid, $this->limited);
+            if ($data['invoice']['id']) $data['products'] = $this->invocies->draft_invoice_products($tid);
+            $data['draft_id'] = $draft_id;
+        }else{
+            $data['invoice'] = $this->invocies->invoice_details($tid, $this->limited);
+            if ($data['invoice']['id']) $data['products'] = $this->invocies->invoice_products($tid);
+        }
         $head['title'] = "Edit Invoice #$tid";
         $head['usernm'] = $this->aauth->get_user()->username;
         $data['warehouse'] = $this->invocies->warehouses();
@@ -204,7 +300,6 @@ class Pos_invoices extends CI_Controller
         $this->load->view('fixed/header-pos', $head);
         if ($data['invoice']['id']) $this->load->view('pos/edit', $data);
         $this->load->view('fixed/footer-pos');
-
     }
 
     //invoices list
@@ -264,6 +359,8 @@ class Pos_invoices extends CI_Controller
         $print_now = $this->input->post('printnow');
         $account = $this->input->post('account');
         $table_id = $this->input->post('table_id');
+        $online_id = $this->input->post('online_id');
+        $delivery_id = $this->input->post('delivery_id');
         $this->load->model('plugins_model', 'plugins');
         $empl_e = $this->plugins->universal_api(69);
         if ($empl_e['key1']) {
@@ -396,6 +493,8 @@ class Pos_invoices extends CI_Controller
                     'payment' => 1, 
                     'status' => $draft_id > 0 ? 2 :0,
                     'table_id' => $table_id,
+                    'online_id' => $online_id,
+                    'delivery_id' => $delivery_id,
                     'created_by' => $this->aauth->get_user()->id,
                     'loc' => $this->aauth->get_user()->loc
                 );
@@ -831,6 +930,7 @@ class Pos_invoices extends CI_Controller
             $bill_date = datefordatabase($invoicedate);
             $bill_due_date = datefordatabase($invocieduedate);
             $promo_flag = false;
+            //echo '<pre>'; print_r($invocieno);  
 
             $this->db->from('orders');
             $this->db->where('invoice_id',$invocieno);
@@ -839,7 +939,7 @@ class Pos_invoices extends CI_Controller
                 $invoices = $invoices->row_array(); 
                 $invocieno = $invoices['invoice_id']+1;
             }
-        
+            //echo '<pre>'; print_r($invocieno); exit;
             $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'pmethod' => $pmethod, 'notes' => $notes, 'status' => $status, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'pamnt' => 0, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms,
             'multi' => $currency, 'i_class' => 1, 'loc' => $this->aauth->get_user()->loc, 'table_id' => $table_id);
             if ($this->db->insert('geopos_draft', $data)) {
@@ -853,6 +953,8 @@ class Pos_invoices extends CI_Controller
                 'status' => 0,
                 'draft_id' => 1,
                 'table_id' => $table_id,
+                'online_id' => $online_id,
+                'delivery_id' => $delivery_id,
                 'created_by' => $this->aauth->get_user()->id,
                 'loc' => $this->aauth->get_user()->loc
                 );
@@ -1494,6 +1596,171 @@ class Pos_invoices extends CI_Controller
         $this->db->update('geopos_metadata');
 
     }
+    
+    public function editaction_draft()
+    {
+        if (!$this->aauth->premission(13)) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
+        $ptype = $this->input->post('type');
+        $coupon = $this->input->post('coupon');
+        $notes = $this->input->post('notes', true);
+        $coupon_amount = 0;
+        $coupon_n = '';
+        $account = $this->input->post('account', true);
+        $customer_id = $this->input->post('customer_id');
+        $invocieno_n = $this->input->post('invoiceno');
+        $invocieno = $this->input->post('iid');
+        $invoicedate = $this->input->post('invoicedate');
+        $invocieduedate = $this->input->post('invocieduedate');
+        $currency = $this->input->post('mcurrency');
+        
+        
+            $p_amount = rev_amountExchange_s($this->input->post('p_amount'), $currency, $this->aauth->get_user()->loc);
+            $pmethod = $this->input->post('p_method');
+            $notes = $this->input->post('notes');
+            $tax = $this->input->post('tax_handle');
+            $subtotal = rev_amountExchange_s($this->input->post('subtotal'), $currency, $this->aauth->get_user()->loc);
+            $ship_taxtype = $this->input->post('ship_taxtype');
+            $shipping = rev_amountExchange_s($this->input->post('shipping'), $currency, $this->aauth->get_user()->loc);
+            $shipping_tax = rev_amountExchange_s($this->input->post('ship_tax'), $currency, $this->aauth->get_user()->loc);
+            if ($ship_taxtype == 'incl') $shipping = $shipping - $shipping_tax;
+            $refer = $this->input->post('refer');
+            $total = rev_amountExchange_s($this->input->post('total'), $currency, $this->aauth->get_user()->loc);
+            $old_total = rev_amountExchange_s($this->input->post('old_total'), $currency, $this->aauth->get_user()->loc);
+            $total_tax = 0;
+            $total_discount = 0;
+            $discountFormat = $this->input->post('discountFormat');
+            $pterms = $this->input->post('pterms');
+            //edit
+            $diff = $total - $old_total;
+            $c_amt = $p_amount - $diff;
+            if ($c_amt < 0) {
+                $c_amt = 0;
+            }
+            $i = 0;
+            if ($this->limited) {
+                $employee = $this->invocies->draft_invoice_details($invocieno, $this->limited);
+                if ($this->aauth->get_user()->id != $employee['eid']) exit();
+            }
+            if ($discountFormat == '0') {
+                $discstatus = 0;
+            } else {
+                $discstatus = 1;
+            }
+            if ($customer_id == 0) {
+                echo json_encode(array('status' => 'Error', 'message' =>
+                    $this->lang->line('Please add a new client')));
+                exit;
+            }
+            $this->db->trans_start();
+            $transok = true;
+            $bill_date = datefordatabase($invoicedate);
+            $bill_due_date = datefordatabase($invocieduedate);
+            $promo_flag = false;
+            if ($coupon) {
+                $this->db->select('*');
+                $this->db->from('geopos_promo');
+                $this->db->where('code', $coupon);
+                $query = $this->db->get();
+                $result_c = $query->row_array();
+                if ($result_c['active'] == 0 && $result_c['available'] > 0) {
+                    $promo_flag = true;
+                    $amount = $result_c['amount'];
+                    $notes .= '-' . $this->input->post('i_coupon');
+                    $total_discount += $amount;
+                }
+            }
+            $data = array('invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms, 'multi' => $currency);
+            $this->db->set($data);
+            $this->db->where('id', $invocieno);
+            if ($this->db->update('geopos_draft', $data)) {
+                //Product Data
+                $pid = $this->input->post('pid');
+                $productlist = array();
+                $prodindex = 0;
+                $itc = 0;
+                $this->db->delete('geopos_draft_items', array('tid' => $invocieno));
+                $product_id = $this->input->post('pid');
+                $product_name1 = $this->input->post('product_name', true);
+                $product_qty = $this->input->post('product_qty');
+                $old_product_qty = $this->input->post('old_product_qty');
+                $product_price = $this->input->post('product_price');
+                $product_tax = $this->input->post('product_tax');
+                $product_discount = $this->input->post('product_discount');
+                $product_subtotal = $this->input->post('product_subtotal');
+                $ptotal_tax = $this->input->post('taxa');
+                $ptotal_disc = $this->input->post('disca');
+                $product_des = $this->input->post('product_description', true);
+                $product_unit = $this->input->post('unit');
+                $product_hsn = $this->input->post('hsn');
+                $product_serial = $this->input->post('serial');
+                foreach ($pid as $key => $value) {
+
+                    $total_discount += numberClean(@$ptotal_disc[$key]);
+                    $total_tax += numberClean($ptotal_tax[$key]);
+                    $data = array(
+                        'tid' => $invocieno,
+                        'pid' => $product_id[$key],
+                        'product' => $product_name1[$key],
+                        'code' => $product_hsn[$key],
+                        'qty' => numberClean($product_qty[$key]),
+                        'price' => rev_amountExchange_s($product_price[$key], $currency, $this->aauth->get_user()->loc),
+                        'tax' => numberClean($product_tax[$key]),
+                        'discount' => numberClean($product_discount[$key]),
+                        'subtotal' => rev_amountExchange_s($product_subtotal[$key], $currency, $this->aauth->get_user()->loc),
+                        'totaltax' => rev_amountExchange_s($ptotal_tax[$key], $currency, $this->aauth->get_user()->loc),
+                        'totaldiscount' => rev_amountExchange_s($ptotal_disc[$key], $currency, $this->aauth->get_user()->loc),
+                        'product_des' => $product_des[$key],
+                        'i_class' => 1,
+                        'unit' => $product_unit[$key] 
+                    );
+
+                    $productlist[$prodindex] = $data;
+                    $i++;
+                    $prodindex++;
+                    $amt = numberClean($product_qty[$key]) - @numberClean($old_product_qty[$key]);
+
+                    // if ($product_id[$key] > 0) {
+                    //     $this->db->set('qty', "qty-$amt", FALSE);
+                    //     $this->db->where('pid', $product_id[$key]);
+                    //     $this->db->update('geopos_products');
+                    // }
+                    $itc += $amt;
+                }
+                if ($prodindex > 0) {
+                    $this->db->insert_batch('geopos_draft_items', $productlist);
+                    $this->db->set(array('discount' => rev_amountExchange_s(amountFormat_general($total_discount), $currency, $this->aauth->get_user()->loc), 'tax' => rev_amountExchange_s(amountFormat_general($total_tax), $currency, $this->aauth->get_user()->loc), 'items' => $itc));
+                    $this->db->where('id', $invocieno);
+                    $this->db->update('geopos_draft');
+                    // if (count($product_serial) > 0) {
+                    //     $this->db->set('status', 1);
+                    //     $this->db->where_in('serial', $product_serial);
+                    //     $this->db->update('geopos_product_serials');
+                    // }
+
+                } else {
+                    echo json_encode(array('status' => 'Error', 'message' =>
+                        "Please add at least one product in invoice"));
+                    $transok = false;
+                }
+                echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('Invoice has  been updated') . " <a href='create' class='btn btn-info btn-lg'><span class='icon-file-text2' aria-hidden='true'></span> " . $this->lang->line('View') . " </a> "));
+
+                
+            } else {
+                echo json_encode(array('status' => 'Error', 'message' =>
+                    $this->lang->line('ERROR')));
+                $transok = false;
+            }
+
+
+            if ($transok) {
+                $this->db->trans_complete();
+            } else {
+                $this->db->trans_rollback();
+            }
+
+    }
 
     public function update_status()
     {
@@ -2023,8 +2290,8 @@ echo 6;
 
             $qrCode = new QrCode(base_url('billing/card?id=' . $tid . '&itype=inv&token=' . $token));
 
-//header('Content-Type: '.$qrCode->getContentType());
-//echo $qrCode->writeString();
+            //header('Content-Type: '.$qrCode->getContentType());
+            //echo $qrCode->writeString();
             $qrCode->writeFile(FCPATH . 'userfiles/pos_temp/' . $data['qrc']);
         }
 

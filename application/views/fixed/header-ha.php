@@ -820,6 +820,18 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+                                <i class="ft-list"></i> <?php echo $this->lang->line('Online_Orders') ?></a>
+                            <ul class="dropdown-menu">
+                                <li data-menu=""><a class="dropdown-item" href="<?= base_url(); ?>online_order/add"
+                                                    data-toggle="dropdown"> <?php echo $this->lang->line('new_order'); ?></a>
+                                </li>
+                                <li data-menu=""><a class="dropdown-item" href="<?php echo base_url(); ?>online_order"
+                                                    data-toggle="dropdown"><?= $this->lang->line('manage_order'); ?></a>
+                                </li>
+                            </ul>
+                        </li>
 
                     </ul>
                 </li>

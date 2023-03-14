@@ -17,6 +17,7 @@
                 <div id="customer-box-result" class="col-md-12"></div>
                 <div id="customer" class="col-md-12 ml-3">
                     <div class="clientinfo">
+                        <input type="hidden" name="draft_id" value="<?php echo $draft_id; ?>">
                         <input type="hidden" name="customer_id" id="customer_id"
                                value="<?= $invoice['csd'] ?>">
                         <div id="customer_name"><strong><?= $invoice['name'] ?></strong></div>
@@ -353,7 +354,11 @@
 
     </div>
 
-    <input type="hidden" value="pos_invoices/editaction" id="action-url">
+    <?php if(isset($draft_id) && $draft_id > 0){ ?>
+        <input type="hidden" value="pos_invoices/editaction_draft" id="action-url">
+    <?php } else{ ?>
+        <input type="hidden" value="pos_invoices/editaction" id="action-url">
+    <?php } ?>
     <input type="hidden" value="search" id="billtype">
     <input type="hidden" value="<?= $i ?>" name="counter" id="ganak">
     <input type="hidden" value="<?php echo $this->config->item('currency'); ?>" name="currency">

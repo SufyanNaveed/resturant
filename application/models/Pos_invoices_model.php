@@ -45,6 +45,23 @@ class Pos_invoices_model extends CI_Model
         }
     }
 
+    public function lastorderid()
+    {
+        $this->db->select('invoice_id');
+        $this->db->from('orders');
+        $this->db->order_by('id', 'DESC');
+        $this->db->limit(1);
+        if (@$this->aauth->get_user()->loc) {
+            $this->db->where('orders.loc', $this->aauth->get_user()->loc);
+        }  elseif(!BDATA and !$loc) { $this->db->where('orders.loc', 0); }
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->row()->invoice_id;
+        } else {
+            return 1000;
+        }
+    }
+
 
     public function invoice_details($id, $eid = '',$loc=null)
     {
@@ -402,7 +419,7 @@ class Pos_invoices_model extends CI_Model
         // $query = $this->db->get();
         // return $query->result_array();
 
-        $this->db->select('orders.*, tables.table_no, floors.floor_num');
+        $this->db->select('orders.*, tables.table_no, floors.floor_num, online_order.name as order_app_name');
         $this->db->from('orders');
         // $this->db->join('geopos_invoices', 'geopos_invoices.id = orders.kot', 'left');
         // $this->db->join('geopos_invoice_items', 'geopos_invoice_items.tid = orders.kot', 'left');
@@ -410,10 +427,11 @@ class Pos_invoices_model extends CI_Model
         // $this->db->join('kitchen', 'kitchen.id = geopos_products.kitchen_id', 'left');
         $this->db->join('tables', 'tables.id = orders.table_id', 'left');
         $this->db->join('floors', 'floors.id = tables.floor_id', 'left');
+        $this->db->join('online_order', 'online_order.id = orders.online_id', 'left');
         // $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
         // $this->db->where('geopos_products.kitchen_id',$kitchen_id);
         $this->db->where('orders.loc', $this->aauth->get_user()->loc);
-        $this->db->where('orders.status !=',2);
+        $this->db->where('orders.status !=',3);
         $this->db->limit(12);
         $query = $this->db->get();
         return $query->result_array();

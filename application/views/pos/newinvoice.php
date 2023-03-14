@@ -17,7 +17,7 @@
     background: #ffbcc6;
     margin-bottom: 10px;
     width: 100%;
-    padding: 10px 10px 38px 10px!important;
+    padding: 10px!important;
     list-style-type: none;
     margin-top: 15px;
 }
@@ -55,6 +55,11 @@
     border-color: #359393 !important;
     color: white !important;
     float:left;
+}
+
+.alertclassprimaryserved_color{
+    background-color: #16d39a !important;
+    border-color: #16d39a !important;
 }
 .alertclassdanger{
     padding: 4px;
@@ -110,13 +115,26 @@
                         <br>
                         <div class="row">
                             <div class="offset-1 col-10">
+                                <div class="input-group" style="margin-bottom: 5px;">
+                                    <input class="order_type_radio" type="radio" aria-label="Enable Dine-In Order" value="dine" id="order_type" name="order_type" style="margin-left: 17px;"> &nbsp; <span style="margin-right: 100px;">Dine-in</span> &nbsp;&nbsp;&nbsp;
+                                    <input class="order_type_radio" type="radio" aria-label="Enable Online Order" value="online" id="order_type_online" name="order_type"> &nbsp;<span style="margin-right: 100px;">Online Order</span> &nbsp;&nbsp;&nbsp;
+                                    <input class="order_type_radio" type="radio" aria-label="Enable Delivery Order" value="delivery" id="order_type_del" name="order_type"> &nbsp;<span> Delivery </span> &nbsp;&nbsp;&nbsp;
+                                </div>
                                 <div class="input-group">
-                                    <select class="form-control required" id="table_id" name="table_id">
+                                    <select class="form-control" id="table_id" name="table_id" style="display:none;">
                                         <option value="">-- Select Table --</option>
                                         <?php if($tables){ foreach($tables as $key=>$table){ if(!existsKeyValue($busy_tables, 'table_id', $table['id'])){ ?>
                                             <option value="<?php echo $table['id'] ?>"><?php echo $table['floor_num'] .'&nbsp;&nbsp;-&nbsp;&nbsp;'.$table['table_no'] ?></option>
                                         <?php } } }  ?>
                                     </select>
+
+                                    <select class="form-control" id="online_id" name="online_id" style="display:none;">
+                                        <option value="">-- Select Online Order App --</option>
+                                        <?php if($online_order_app){ foreach($online_order_app as $key=>$online_order){ ?>
+                                            <option value="<?php echo $online_order['id'] ?>"><?php echo $online_order['name'] ?></option>
+                                        <?php }  }  ?>
+                                    </select>
+                                    <input type="hidden" value="0" name="delivery_id" id="delivery_id">
                                 </div>
                             </div>
                             <!-- <div class="col-5">
@@ -317,7 +335,7 @@
                                                 </div>
                                                 <input type="text" class="form-control" placeholder="Invoice #"
                                                        name="invocieno" id="invocieno"
-                                                       value="<?php echo $lastinvoice + 1 ?>">
+                                                       value="<?php echo $lastorder > $lastinvoice ? $lastorder + 1 : $lastinvoice + 1; ?>">
                                             </div>
                                         </div>
                                         <div class="col-sm-3"><label for="invocieno"
@@ -442,39 +460,46 @@
                             </div>
                         </div>                        
                     </div>
-                    <div class="col-sm-6 paid_item" style="display:none;">
-                        <h1>Pre-paid Order(s)</h1>
-                        <div>
-                            <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 1 && $rowd['draft_id'] == 0){ ?>
-                                <li class="indigo p-1 text-center">
-                                    <a><span><strong><?php echo 'KOT # '.$rowd['invoice_id'] ?></strong></span>&nbsp;&nbsp; <span><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp;
-                                        <br><span><?php echo $rowd['created_at']; ?></span>&nbsp;&nbsp;
-                                        <br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve Order</span>' ?>
-                                    </a>
-                                    <a style="padding: 0.58rem 0.5rem;color:white;float:right " href="javascript:void(0)" data-object-id="<?php echo $rowd['id']; ?>" class="btn btn-blue btn-sm delete-object">
-                                        <i class="fa fa-arrow-circle-o-right"></i> 
-                                        <?php echo $this->lang->line('clear_table') ?>
-                                    </a>
-                                </li>
-                            <?php } } } ?>
+                    <div class="running_orders row col-sm-12">
+                        <div class="col-sm-6 paid_item" style="display:none;">
+                            <h1>Pre-paid Order(s)</h1>
+                            <div class="paid_item_orders">
+                                <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 1 && $rowd['draft_id'] == 0){ ?>
+                                    <li class="indigo p-1 text-center">
+                                        <a><span><strong><?php echo 'KOT # '.$rowd['invoice_id'] ?></strong></span>&nbsp;&nbsp; <span><?php if($rowd['table_id'] > 0){ echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no']; }elseif($rowd['online_id'] > 0){ echo 'Online '.$rowd['order_app_name']. ' Order'; } else { echo 'Home Delivery'; } ?></span>&nbsp;&nbsp;
+                                            <br><span><?php echo $rowd['created_at']; ?></span>&nbsp;&nbsp;
+                                        </a>
+                                        <br> <?php if($rowd['status'] == 0){ echo '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>'; } elseif($rowd['status'] == 1){ echo '<a href="javascript:void(0)" class="update-object" data-object-id="'.$rowd['id'].'"><span class="alert alert-primary alertclassprimaryserved alertclassprimaryserved_color">Serve Order</span></a>'; } elseif($rowd['status'] == 2){ echo '<span class="alert alert-primary alertclassprimaryserved">Served Order</span>'; } ?>
+                                        <a style="padding: 0.58rem 0.5rem;color:white;float:right " href="javascript:void(0)" data-object-id="<?php echo $rowd['id']; ?>" class="btn btn-blue btn-sm delete-object">
+                                            <i class="fa fa-arrow-circle-o-right"></i> 
+                                            <?php echo $this->lang->line('clear_table') ?>
+                                        </a>
+                                    </li>
+                                <?php } } } ?>
+                            </div>
                         </div>
-                    </div>
-                    <div class="vr"></div>
-                    <div class="col-sm-6 draft_item" style="display:none;">
-                        <h1>Post-paid Order(s)</h1>
-                        <div>
-                            <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 0 && $rowd['draft_id'] == 1){ ?>
-                                <li class="indigo p-2 text-center">
-                                    <a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span><strong><?php echo 'KOT # '.$rowd['invoice_id'] ?></strong></span>&nbsp;&nbsp; <span><?php echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no'] ?></span>&nbsp;&nbsp; 
-                                        <br><span><?php echo $rowd['created_at']; ?></span>&nbsp;&nbsp;                                     
-                                        <br> <?php echo $rowd['status'] == 0 ? '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>' : '<span class="alert alert-primary alertclassprimaryserved">Serve Order</span>' ?>
-                                    </a>
-                                    <a style="padding: 0.58rem 0.5rem;color:white;float:right " href="<?php echo base_url().'pos_invoices/thermal_pdf?id='.$rowd['kot'].'&draft_id=1'; ?>" target="_blank" class="btn btn-blue btn-sm">
-                                        <i class="fa fa-arrow-circle-o-right"></i> 
-                                        <?php echo $this->lang->line('generate_recipt') ?>
-                                    </a>
-                                </li>
-                            <?php } } } ?>
+                        <div class="vr"></div>
+                        <div class="col-sm-6 draft_item" style="display:none;">
+                            <h1>Post-paid Order(s)</h1>
+                            <div class="draft_item_orders">
+                                <?php if($draft_list) { foreach ($draft_list as $rowd){ if($rowd['payment'] == 0 && $rowd['draft_id'] == 1){ ?>
+                                    <li class="indigo p-2 text-center">
+                                        <a href="<?php echo base_url('pos_invoices/draft?id='.$rowd['kot']) ?>"><span><strong><?php echo 'KOT # '.$rowd['invoice_id'] ?></strong></span>&nbsp;&nbsp; <span><?php if($rowd['table_id'] > 0){ echo $rowd['floor_num'].'&nbsp;-&nbsp;'.$rowd['table_no']; }elseif($rowd['online_id'] > 0){ echo 'Online '.$rowd['order_app_name']. ' Order'; } else { echo 'Home Delivery'; } ?></span>&nbsp;&nbsp; 
+                                            <br><span><?php echo $rowd['created_at']; ?></span>&nbsp;&nbsp;                                     
+                                        </a>                                    
+                                        <br> <?php if($rowd['status'] == 0){ echo '<span class="alert alert-primary alertclassprimary">Ready to Cook</span>'; } elseif($rowd['status'] == 1){ echo '<a href="javascript:void(0)" class="update-object" data-object-id="'.$rowd['id'].'"><span class="alert alert-primary alertclassprimaryserved alertclassprimaryserved_color">Serve Order</span></a>'; } elseif($rowd['status'] == 2){ echo '<span class="alert alert-primary alertclassprimaryserved">Served Order</span>'; } ?>
+                                        <a style="padding: 0.58rem 0.5rem;color:white;float:center " href="<?php echo base_url().'pos_invoices/edit?id='.$rowd['kot'].'&draft_id=1'; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-pencil"></i> &nbsp; 
+                                            <?php echo $this->lang->line('Edit').' '.$this->lang->line('Order') ?>
+                                        </a>
+                                        
+                                        <a style="padding: 0.58rem 0.5rem;color:white;float:right " href="<?php echo base_url().'pos_invoices/thermal_pdf?id='.$rowd['kot'].'&draft_id=1'; ?>" target="_blank" class="btn btn-blue btn-sm">
+                                            <i class="fa fa-arrow-circle-o-right"></i> 
+                                            <?php echo $this->lang->line('generate_recipt') ?>
+                                        </a>
+                                    </li>
+                                <?php } } } ?>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -1055,8 +1080,45 @@
         </div>
     </div>
 </div>
+
+<div id="update_model" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><?php echo $this->lang->line('Served') ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p><?php echo $this->lang->line('Served_this_table') ?></strong></p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="object-id" value="">
+                <input type="hidden" id="action-url-update" value="pos_invoices/update_order_status">
+                <button type="button" data-dismiss="modal" class="btn btn-primary"
+                        id="table-confirm-update"><?php echo $this->lang->line('yes') ?></button>
+                <button type="button" data-dismiss="modal"
+                        class="btn"><?php echo $this->lang->line('no') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
 
+    $(document).on('click', ".update-object", function (e) {
+        e.preventDefault();
+        $('#object-id').val($(this).attr('data-object-id'));
+        $(this).closest('tr').attr('id',$(this).attr('data-object-id'));
+        $('#update_model').modal({backdrop: 'static', keyboard: false});
+
+    });
+
+    $(document).on('click', "#table-confirm-update", function (e) {
+        var o_data = 'order=' + $('#object-id').val();
+        var action_url= $('#action-url-update').val();
+        $('#'+$('#object-id').val()).remove();
+        update_table_status(o_data,action_url);
+    });
+    
     $("#table-confirm").on("click", function() {
         var o_data = 'order=' + $('#object-id').val();
         var action_url= $('#action-url-clear').val();
@@ -1070,12 +1132,24 @@
             url: baseurl + action_url,
             type: 'POST',
             data: action,
-            dataType: 'json',
+            dataType: 'html',
             success: function (data) {
-                return true;
+                $('.running_orders').empty().html(data);
             }
         });
-        window.location.reload();
+        //window.location.reload();
+    }
+
+    function update_running_order() {
+        jQuery.ajax({
+            url: baseurl + 'pos_invoices/update_running_order',
+            type: 'GET',
+            dataType: 'html',
+            success: function (data) {
+                $('.chat_window').hide();
+                $('.running_orders').empty().html(data);
+            }
+        }); 
     }
 
 
@@ -1088,6 +1162,9 @@
             $("#tab3").hide();
             $(".paid_item").show();
             $("#base-tab3").attr('data-id','1');
+            setInterval(update_running_order, 5000);
+        
+
         }else{
             $(".chat_window").addClass("col-sm-12").removeClass("col-sm-6");
             $(".draft_item").hide();
@@ -1099,7 +1176,28 @@
         }
     })
 
+    $(".order_type_radio").click(function(){
+        var type = $(this).val();
+        if(type == 'dine'){
+            $("#table_id").show();
+            $("#online_id").hide();
+            $("#online_id").removeClass("required");
+            $("#table_id").addClass("required");
 
+        }else if(type == 'online'){
+            $("#table_id").hide();
+            $("#online_id").show();
+            $("#table_id").removeClass("required");
+            $("#online_id").addClass("required");
+        }else{
+            $("#online_id").removeClass("required");
+            $("#table_id").removeClass("required");
+            $("#table_id").hide();
+            $("#online_id").hide();
+            $("#delivery_id").val('1');
+
+        }
+    })
 
     var wait = true;
     $.ajax({
@@ -1559,4 +1657,5 @@
             $('#subttlform').val(sum_of_price.toFixed(2));
         }
     });
+
 </script>

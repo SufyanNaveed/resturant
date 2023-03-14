@@ -985,3 +985,14 @@ $lang['no'] = "No";
 $lang['clear this table'] = "This will free the table. Are you sure?";
 $lang['available_data_in_kitchen'] = "No order available in Kitchen";
 $lang['cooked_order'] = "Order cooked. Are you sure?";
+
+$lang['Online_Orders'] = "Online Order Manager";
+$lang['new_order'] = "Add New Online Order";
+$lang['manage_order'] = "Manage Online Orders";
+$lang['edit_order'] = "Edit Online Order";
+
+
+$lang['close'] = "Close";
+$lang['Served'] = "Served Order";
+$lang['Served_this_table'] = "Order served to the guest. Are you sure?";
+
