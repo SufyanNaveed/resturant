@@ -101,7 +101,7 @@
                                 <a href="javascript:void(0)" class="btn btn-info small-box-footer btn-modal detail-model" data-object-id="<?php echo $order['id'] ?>" data-invoice-id="<?php echo $order['invoice_id'] ?>">Order details <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
-                    <?php } }else{ echo '<span style="padding: 0px 620px;">'.$this->lang->line('available_data_in_kitchen').'</span>'; } ?>
+                    <?php } }else{ echo '<span style="padding: 0px 500px;">'.$this->lang->line('available_data_in_kitchen').'</span>'; } ?>
                 </div>
             </div>
         </div>

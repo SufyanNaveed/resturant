@@ -664,10 +664,8 @@
                 </li>
             <?php }
             if ($this->aauth->premission(2)) { ?>
-                <li class="nav-item has-sub <?php if ($this->li_a == "stock") {
-                    echo ' open';
-                } ?>"><a href="#"><i
-                                class="ft-layers"></i><span><?php echo $this->lang->line('Stock') ?></span></a>
+                <li class="nav-item has-sub <?php if ($this->li_a == "stock") { echo ' open'; } ?>"><a href="#">
+                    <i class="ft-layers"></i><span><?php echo $this->lang->line('Stock') ?></span></a>
                     <ul class="menu-content">
                         <li class="menu-item"><a
                                     href="#"><i
@@ -745,6 +743,68 @@
                             </ul>
                         </li>
                     </ul>
+                </li>
+            <?php } 
+            if ($this->aauth->premission(2)) { ?>
+                <li class="nav-item has-sub"><a href="#">
+                    <i class="ft-layers"></i><span><?php echo $this->lang->line('resturant') ?></a>
+                    <ul class="menu-content">
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('kitchen Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>kitchen/add"><?php echo $this->lang->line('New kitchen'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>kitchen"><?= $this->lang->line('Manage kitchen'); ?></a>
+                            </ul>
+                        </li>
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('floor Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>floors/add"><?php echo $this->lang->line('New floor'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>floors"><?= $this->lang->line('Manage floors'); ?></a>
+                            </ul>
+                        </li>
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('table Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>tables/add"><?php echo $this->lang->line('New table'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>tables"><?= $this->lang->line('Manage table'); ?></a>
+                            </ul>
+                        </li>
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('Online_Orders') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>online_order/add"><?php echo $this->lang->line('new_order'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>online_order"><?= $this->lang->line('manage_order'); ?></a>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            <?php }
+            if ($this->aauth->premission(2)) { ?>
+                <li class="nav-item"><a href="orders">
+                    <i class="fa fa-first-order"></i><span><?php echo $this->lang->line('orders') ?></a>
+                    <!-- <ul class="menu-content">
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('kitchen Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>kitchen/add"><?php echo $this->lang->line('New kitchen'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>kitchen"><?= $this->lang->line('Manage kitchen'); ?></a>
+                            </ul>
+                        </li>
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('floor Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>floors/add"><?php echo $this->lang->line('New floor'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>floors"><?= $this->lang->line('Manage floors'); ?></a>
+                            </ul>
+                        </li>
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('table Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>tables/add"><?php echo $this->lang->line('New table'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>tables"><?= $this->lang->line('Manage table'); ?></a>
+                            </ul>
+                        </li>
+                        <li class="menu-item"><a href="#"><i class="ft-list"></i> <?php echo $this->lang->line('Online_Orders') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item"><a href="<?= base_url(); ?>online_order/add"><?php echo $this->lang->line('new_order'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>online_order"><?= $this->lang->line('manage_order'); ?></a>
+                            </ul>
+                        </li>
+                    </ul> -->
                 </li>
             <?php }
             if ($this->aauth->premission(3)) {

@@ -995,4 +995,4 @@ $lang['edit_order'] = "Edit Online Order";
 $lang['close'] = "Close";
 $lang['Served'] = "Served Order";
 $lang['Served_this_table'] = "Order served to the guest. Are you sure?";
-
+$lang['available_order_data'] = "No order available";

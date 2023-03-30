@@ -1,76 +1,76 @@
 <style>
-.indigo.p-1{
-    border: 1px solid black;
-    background: #d0efe5;
-    margin-bottom: 10px;
-    width: 100%;
-    padding: 10px 10px 38px 10px!important;
-    list-style-type: none;
-    margin-top: 15px;
-}
-.indigo.p-1 > a,
-.indigo.p-2 > a{
-    color: black;
-}
-.indigo.p-2 {
-    border: 1px solid black;
-    background: #ffbcc6;
-    margin-bottom: 10px;
-    width: 100%;
-    padding: 10px!important;
-    list-style-type: none;
-    margin-top: 15px;
-}
-.alertclass{
-    padding: 4px;
-    font-size: 13px;
-    font-weight: 900;
-    background-color: #22c2dc !important;
-    color: white !important;
-}
+    .indigo.p-1{
+        border: 1px solid black;
+        background: #d0efe5;
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 10px 10px 38px 10px!important;
+        list-style-type: none;
+        margin-top: 15px;
+    }
+    .indigo.p-1 > a,
+    .indigo.p-2 > a{
+        color: black;
+    }
+    .indigo.p-2 {
+        border: 1px solid black;
+        background: #ffbcc6;
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 10px!important;
+        list-style-type: none;
+        margin-top: 15px;
+    }
+    .alertclass{
+        padding: 4px;
+        font-size: 13px;
+        font-weight: 900;
+        background-color: #22c2dc !important;
+        color: white !important;
+    }
 
-.alertclassinfo{
-    padding: 4px;
-    font-size: 13px;
-    font-weight: 900;
-    background-color: #2196f3 !important;
-    border-color: #2196f3 !important;
-    color: white !important;
-}
+    .alertclassinfo{
+        padding: 4px;
+        font-size: 13px;
+        font-weight: 900;
+        background-color: #2196f3 !important;
+        border-color: #2196f3 !important;
+        color: white !important;
+    }
 
-.alertclassprimary{
-    padding: 4px;
-    font-size: 13px;
-    font-weight: 900;
-    background-color: #b360c4 !important;
-    border-color: #b360c4 !important;
-    color: white !important;
-    float:left;
-}
-.alertclassprimaryserved{
-    padding: 4px;
-    font-size: 13px;
-    font-weight: 900;
-    background-color: #359393 !important;
-    border-color: #359393 !important;
-    color: white !important;
-    float:left;
-}
+    .alertclassprimary{
+        padding: 4px;
+        font-size: 13px;
+        font-weight: 900;
+        background-color: #b360c4 !important;
+        border-color: #b360c4 !important;
+        color: white !important;
+        float:left;
+    }
+    .alertclassprimaryserved{
+        padding: 4px;
+        font-size: 13px;
+        font-weight: 900;
+        background-color: #359393 !important;
+        border-color: #359393 !important;
+        color: white !important;
+        float:left;
+    }
 
-.alertclassprimaryserved_color{
-    background-color: #16d39a !important;
-    border-color: #16d39a !important;
-}
-.alertclassdanger{
-    padding: 4px;
-    font-size: 13px;
-    font-weight: 900;
-}
-.vr {
-    border-left: 2px solid #2591c8;
-    height: auto;
-    margin: 0px -2px 0px -1px;
-}
+    .alertclassprimaryserved_color{
+        background-color: #16d39a !important;
+        border-color: #16d39a !important;
+    }
+    .alertclassdanger{
+        padding: 4px;
+        font-size: 13px;
+        font-weight: 900;
+    }
+    .vr {
+        border-left: 2px solid #2591c8;
+        height: auto;
+        margin: 0px -2px 0px -1px;
+    }
 </style>
 
 
@@ -271,9 +271,10 @@
                                         <?php echo $this->lang->line('POS') . ' ' . $this->lang->line('Settings') ?></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="btn btn-outline-danger  mr-1 mb-1" id="base-tab3" data-toggle="tab"
+                                    <!-- <a class="btn btn-outline-danger  mr-1 mb-1" id="base-tab3" data-toggle="tab"
                                        aria-controls="tab3" href="#tab3" data-id="0" role="tab" aria-selected="false"><i
-                                                class="fa fa-save"></i> <?php echo $this->lang->line('orders') ?></a>
+                                                class="fa fa-save"></i> <?php echo $this->lang->line('orders') ?></a> -->
+                                    <a class="btn btn-outline-danger  mr-1 mb-1" id="base-tab3" href="<?php echo base_url('orders') ?>" role="tab"><i class="fa fa-first-order"></i> <?php echo $this->lang->line('orders') ?></a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="btn btn-outline-success mb-1" id="base-tab4" data-toggle="tab"
@@ -460,7 +461,7 @@
                             </div>
                         </div>                        
                     </div>
-                    <div class="running_orders row col-sm-12">
+                    <!-- <div class="running_orders row col-sm-12">
                         <div class="col-sm-6 paid_item" style="display:none;">
                             <h1>Pre-paid Order(s)</h1>
                             <div class="paid_item_orders">
@@ -501,7 +502,7 @@
                                 <?php } } } ?>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </section>
                 <section class="chat-app-form">
                     <div class="form-group text-center">
@@ -1059,7 +1060,7 @@
     </div>
 </div>
 
-<div id="delete_model" class="modal fade">
+<!-- <div id="delete_model" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -1101,7 +1102,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <script type="text/javascript">
 
     $(document).on('click', ".update-object", function (e) {
@@ -1393,7 +1394,7 @@
 
             },
         });
-}, 2500);
+    }, 2500);
 
     }
 

@@ -164,7 +164,8 @@ class Kitchen extends CI_Controller
         $this->db->where('id',$order_id);
         if($this->db->update('orders')) {
             if($status == 3){
-                redirect('pos_invoices/create');
+                // redirect('pos_invoices/create');
+                //redirect('orders');
             }else{
                 echo true;
             }
