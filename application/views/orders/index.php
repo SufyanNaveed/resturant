@@ -291,7 +291,7 @@
 
     $(function () {
         'use strict';
-        //setInterval(update_running_order, 5000);
+        setInterval(update_running_order, 5000);
     });
 
 
